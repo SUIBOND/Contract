@@ -5,11 +5,11 @@ module suibond::suibond {
   use suibond::platform;
 
   entry fun register_developer(ctx: &mut TxContext) {
-
+    developer::register_developer(ctx);
   }
 
   entry fun register_foundation(ctx: &mut TxContext) {
-
+    foundation::register_foundation(ctx);
   }
 
   entry fun propose_and_stake(ctx: &mut TxContext) {

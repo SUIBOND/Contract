@@ -1,4 +1,5 @@
 module suibond::developer {
+  use sui::transfer;
   public struct Developer has key, store {
     id: UID,
     owner: address
@@ -18,5 +19,13 @@ module suibond::developer {
 
   public struct Milestone has key, store {
     id: UID
+  }
+
+  #[allow(lint(self_transfer))]
+  public fun register_developer(ctx: &mut TxContext) {
+    transfer::public_transfer(Developer{
+      id: object::new(ctx),
+      owner: ctx.sender()
+    }, ctx.sender())
   }
 }

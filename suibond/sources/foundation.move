@@ -13,4 +13,12 @@ module suibond::foundation {
     max_amount: u64
   }
 
+  #[allow(lint(self_transfer))]
+  public fun register_foundation(ctx: &mut TxContext) {
+    transfer::public_transfer(Foundation{
+      id: object::new(ctx),
+      owner: ctx.sender()
+    }, ctx.sender())
+  }
+
 }
