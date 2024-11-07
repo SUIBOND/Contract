@@ -68,7 +68,7 @@ module suibond::suibond {
 
 
   // -----------------------------------------
-  // STEP 3 : Confirm Project
+  // STEP 3 : Confirm Proposal
   //FOUNDATION
   entry fun confirm_proposal(ctx: &mut TxContext) {
 
@@ -91,6 +91,9 @@ module suibond::suibond {
   //FOUNDATION
   entry fun confirm_milestone(ctx: &mut TxContext) {
 
+    // if the milestone deadline is missed, developer will get slashing
+
+    // if the milestone is last one, developer will get stake amount
   }
 
   //FOUNDATION
