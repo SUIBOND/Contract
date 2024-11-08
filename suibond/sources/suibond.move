@@ -3,7 +3,7 @@ module suibond::suibond {
   use suibond::developer;
   use suibond::developer_cap;
   use suibond::foundation::{Self, Foundation};
-  use suibond::foundation_cap;
+  use suibond::foundation_cap::{Self, FoundationCap};
   use suibond::platform::{Self, SuibondPlatform};
 
   use std::string::{String};
@@ -32,8 +32,8 @@ module suibond::suibond {
   // -----------------------------------------
   // STEP 1 : Create and Register Foundation
   //FOUNDATION
-  entry fun create_foundation(foundation_cap: ID, name: String, ctx: &mut TxContext) {
-    let foundation = foundation::new(foundation_cap, name, ctx);
+  entry fun create_foundation(foundation_cap: &FoundationCap, name: String, ctx: &mut TxContext) {
+    let foundation = foundation::new(foundation_cap.id(), name, ctx);
     transfer::public_transfer(foundation, ctx.sender());
   }
 
@@ -56,9 +56,13 @@ module suibond::suibond {
   // }
 
   //FOUNDATION
-  // entry fun register_foundation(platform: &mut SuibondPlatform, foundation: Foundation, ctx: &mut TxContext) {
+  entry fun register_foundation(platform: &mut SuibondPlatform, foundation_cap: &mut FoundationCap, foundation: Foundation, ctx: &mut TxContext) {
+    assert!(foundation_cap.owner() == ctx.sender(),100);
+    assert!(foundation.cap() == foundation_cap.id(), 100);
 
-  // }
+    foundation_cap.add_foundation(&foundation);
+    platform.register_foundation(foundation, ctx);
+  }
 
 
 

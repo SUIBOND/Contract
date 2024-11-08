@@ -13,7 +13,6 @@ module suibond::platform {
     owner: address,
     foundation_table: ObjectTable<ID, Foundation>, 
     foundation_ids: vector<ID>,
-
   }
 
   // ================= METHODS =================
@@ -30,8 +29,7 @@ module suibond::platform {
     })
   }
 
-  public fun register_foundation(platform: &mut SuibondPlatform, foundation_cap: &FoundationCap, foundation: Foundation, ctx: &mut TxContext) {
-    assert!(foundation_cap.owner() == ctx.sender(),100);
+  public fun register_foundation(platform: &mut SuibondPlatform, foundation: Foundation, ctx: &mut TxContext) {
     platform.foundation_ids.push_back(foundation.id());
     dynamic_object_field::add(&mut platform.id, foundation.id(), foundation);
   }

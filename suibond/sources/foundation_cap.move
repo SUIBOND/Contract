@@ -1,6 +1,7 @@
 
 module suibond::foundation_cap {
   use std::string::{String};
+  use suibond::foundation::{Foundation};
 
   public struct FoundationCap has key, store {
     id: UID,
@@ -17,6 +18,10 @@ module suibond::foundation_cap {
 
   public fun owner(foundation_cap: &FoundationCap): address {
     foundation_cap.owner
+  }
+
+  public fun add_foundation(foundation_cap: &mut FoundationCap, foundation: &Foundation) {
+    foundation_cap.foundation_ids.push_back(foundation.id());
   }
 
   // ================= FUNCTIONS =================

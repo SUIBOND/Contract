@@ -21,6 +21,10 @@ module suibond::foundation {
     object::id(foundation)
   }
 
+  public fun cap(foundation: &Foundation): ID {
+    foundation.foundation_cap
+  }
+
   public fun add_bounty(foundation: &mut Foundation, bounty: Bounty) {
     foundation.bounty_table_keys.push_back(bounty.name());
     foundation.bounty_table.add(bounty.name(), bounty);
