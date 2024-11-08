@@ -21,9 +21,14 @@ module suibond::foundation {
     object::id(foundation)
   }
 
+  public fun owner(foundation: &Foundation): address {
+    foundation.owner
+  }
+
   public fun cap(foundation: &Foundation): ID {
     foundation.foundation_cap
   }
+
 
   public fun add_bounty(foundation: &mut Foundation, bounty: Bounty) {
     foundation.bounty_table_keys.push_back(bounty.name());
@@ -38,14 +43,14 @@ module suibond::foundation {
     name: String,
     ctx: &mut TxContext
     ) : Foundation {
-    Foundation {
-      id: object::new(ctx),
-      owner: ctx.sender(),
-      foundation_cap: foundation_cap,
-      name: name,
-      bounty_table: object_table::new(ctx),
-      bounty_table_keys: vector<String>[]
-    }
+      Foundation {
+        id: object::new(ctx),
+        owner: ctx.sender(),
+        foundation_cap: foundation_cap,
+        name: name,
+        bounty_table: object_table::new(ctx),
+        bounty_table_keys: vector<String>[]
+      }
   }
 
   public fun add_bounty_to_foundation(
@@ -57,17 +62,17 @@ module suibond::foundation {
     max_amount: u64,
     coin: Coin<SUI>,
     ctx: &mut TxContext) {
-    let bounty = bounty::new(
-      foundation.id(),
-      name,
-      bounty_type,
-      risk_percent,
-      min_amount,
-      max_amount,
-      coin,
-      ctx);
+      let bounty = bounty::new(
+        foundation.id(),
+        name,
+        bounty_type,
+        risk_percent,
+        min_amount,
+        max_amount,
+        coin,
+        ctx);
 
-    foundation.add_bounty(bounty);
+      foundation.add_bounty(bounty);
   }
 
 

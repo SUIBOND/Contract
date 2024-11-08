@@ -47,23 +47,32 @@ module suibond::suibond {
     max_amount: u64,
     coin: Coin<SUI>,
     ctx: &mut TxContext) {
-    foundation.add_bounty_to_foundation(name, bounty_type, risk_percent, min_amount, max_amount, coin, ctx);
+      foundation.add_bounty_to_foundation(name, bounty_type, risk_percent, min_amount, max_amount, coin, ctx);
   }
-
-  // //FOUNDATION
-  // entry fun update_bounty(ctx: &mut TxContext) {
-
-  // }
 
   //FOUNDATION
   entry fun register_foundation(platform: &mut SuibondPlatform, foundation_cap: &mut FoundationCap, foundation: Foundation, ctx: &mut TxContext) {
     assert!(foundation_cap.owner() == ctx.sender(),100);
-    assert!(foundation.cap() == foundation_cap.id(), 100);
+    assert!(foundation.owner() == ctx.sender(),101);
+    assert!(foundation.cap() == foundation_cap.id(), 102);
 
     foundation_cap.add_foundation(&foundation);
-    platform.register_foundation(foundation, ctx);
+    platform.register_foundation(foundation);
   }
 
+  //FOUNDATION
+  entry fun add_bounty_to_foundation_in_platform(
+    platform: &mut SuibondPlatform, 
+    foundation: &Foundation, 
+    name: String,
+    bounty_type: u64,
+    risk_percent: u64,
+    min_amount: u64,
+    max_amount: u64,
+    coin: Coin<SUI>,
+    ctx: &mut TxContext) {
+      platform.add_bounty_to_foundation_in_platform(foundation, name, bounty_type, risk_percent, min_amount, max_amount, coin, ctx);
+  }
 
   // -----------------------------------------
   // STEP 2-1 : Create Project
