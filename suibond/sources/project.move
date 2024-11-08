@@ -1,5 +1,6 @@
 module suibond::project {
   use std::string::{String};
+  use suibond::milestone::{Milestone};
 
   public struct Project has key, store {
     id: UID,
@@ -18,17 +19,6 @@ module suibond::project {
     state: u64
   }
 
-  public struct Milestone has key, store {
-    id: UID,
-    milestone_number: u64,
-
-    title: String,
-    description: String,
-
-    duration_epochs: u64,
-
-    state: u64
-  }
 
   // ================= METHODS =================
 
