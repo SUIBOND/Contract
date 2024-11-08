@@ -1,7 +1,8 @@
 
 module suibond::foundation_cap {
   use std::string::{String};
-  use suibond::foundation::{Foundation};
+  use sui::dynamic_object_field::{Self};
+  use suibond::foundation::{Self, Foundation};
 
   public struct FoundationCap has key, store {
     id: UID,
@@ -21,6 +22,8 @@ module suibond::foundation_cap {
   }
 
   public fun add_foundation(foundation_cap: &mut FoundationCap, foundation: &Foundation) {
+    assert!(foundation_cap.foundation_ids.length() <= 1, 1); // for easy version. it can store only one foundation
+
     foundation_cap.foundation_ids.push_back(foundation.id());
   }
 

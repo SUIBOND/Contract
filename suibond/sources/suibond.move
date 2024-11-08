@@ -32,36 +32,14 @@ module suibond::suibond {
   // -----------------------------------------
   // STEP 1 : Create and Register Foundation
   //FOUNDATION
-  entry fun create_foundation(foundation_cap: &FoundationCap, name: String, ctx: &mut TxContext) {
+  entry fun create_and_register_foundation(foundation_cap: &mut FoundationCap, name: String, platform: &mut SuibondPlatform, ctx: &mut TxContext) {
     let foundation = foundation::new(foundation_cap.id(), name, ctx);
-    transfer::public_transfer(foundation, ctx.sender());
-  }
-
-  //FOUNDATION
-  entry fun add_bounty_to_foundation(
-    foundation: &mut Foundation, 
-    name: String,
-    bounty_type: u64,
-    risk_percent: u64,
-    min_amount: u64,
-    max_amount: u64,
-    coin: Coin<SUI>,
-    ctx: &mut TxContext) {
-      foundation.add_bounty_to_foundation(name, bounty_type, risk_percent, min_amount, max_amount, coin, ctx);
-  }
-
-  //FOUNDATION
-  entry fun register_foundation(platform: &mut SuibondPlatform, foundation_cap: &mut FoundationCap, foundation: Foundation, ctx: &mut TxContext) {
-    assert!(foundation_cap.owner() == ctx.sender(),100);
-    assert!(foundation.owner() == ctx.sender(),101);
-    assert!(foundation.cap() == foundation_cap.id(), 102);
-
     foundation_cap.add_foundation(&foundation);
     platform.register_foundation(foundation);
   }
 
   //FOUNDATION
-  entry fun add_bounty_to_foundation_in_platform(
+  entry fun add_bounty_to_foundation(
     platform: &mut SuibondPlatform, 
     foundation: &Foundation, 
     name: String,
@@ -71,7 +49,7 @@ module suibond::suibond {
     max_amount: u64,
     coin: Coin<SUI>,
     ctx: &mut TxContext) {
-      platform.add_bounty_to_foundation_in_platform(foundation, name, bounty_type, risk_percent, min_amount, max_amount, coin, ctx);
+      platform.create_and_add_bounty(foundation, name, bounty_type, risk_percent, min_amount, max_amount, coin, ctx);
   }
 
   // -----------------------------------------
