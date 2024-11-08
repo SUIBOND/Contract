@@ -3,14 +3,8 @@ module suibond::developer {
   use sui::transfer;
   use sui::coin::{Self, Coin};
   use sui::sui::{Self, SUI};
+  use suibond::developer_cap::{Self, DeveloperCap};
 
-  public struct DeveloperCap has key, store {
-    id: UID,
-    owner: address,
-    name: String,
-    unsubmitted_proposal: vector<ID>,
-    completed_proposal: vector<ID>,
-  }
 
   public struct Proposal has key, store {
     id: UID,
@@ -53,17 +47,11 @@ module suibond::developer {
 
     state: u64
   }
+  // ================= METHODS =================
 
-  #[allow(lint(self_transfer))]
-  public fun mint_developer_cap(name: String, ctx: &mut TxContext) {
-    transfer::public_transfer(DeveloperCap{
-      id: object::new(ctx),
-      owner: ctx.sender(),
-      name: name,
-      unsubmitted_proposal: vector<ID>[],
-      completed_proposal: vector<ID>[]
-    }, ctx.sender())
-  }
+
+  // ================= FUNCTIONS =================
+
 
   public fun create_proposal(ctx: &mut TxContext) {
 

@@ -1,23 +1,31 @@
 /// Module: suibond
 module suibond::suibond {
   use suibond::developer;
-  use suibond::foundation;
-  use suibond::platform;
+  use suibond::developer_cap;
+  use suibond::foundation::{Self, Foundation};
+  use suibond::foundation_cap;
+  use suibond::platform::{Self, SuibondPlatform};
 
   use std::string::{String};
   use sui::coin::{Self, Coin};
   use sui::sui::{Self, SUI};
 
+
+  fun init(ctx: &mut TxContext) {
+    platform::create_and_share(ctx);
+  }
+
+
   // -----------------------------------------
   // STEP 0 : Identify
   // DEVELOPER
   entry fun mint_developer_cap(name: String,  ctx: &mut TxContext) {
-    developer::mint_developer_cap(name, ctx);
+    developer_cap::mint(name, ctx);
   }
 
   //FOUNDATION
   entry fun mint_foundation_cap(name: String, ctx: &mut TxContext) {
-    foundation::mint_foundation_cap(name, ctx);
+    foundation_cap::mint(name, ctx);
   }
 
 
@@ -25,7 +33,7 @@ module suibond::suibond {
   // STEP 1 : Create and Register Foundation
   //FOUNDATION
   entry fun create_foundation(foundation_cap: ID, name: String, ctx: &mut TxContext) {
-    let foundation = foundation::new_foundation(foundation_cap, name, ctx);
+    let foundation = foundation::new(foundation_cap, name, ctx);
     transfer::public_transfer(foundation, ctx.sender());
   }
 
@@ -35,7 +43,7 @@ module suibond::suibond {
   // }
 
   //FOUNDATION
-  entry fun register_foundation(ctx: &mut TxContext) {
+  entry fun register_foundation(platform: &mut SuibondPlatform, foundation: Foundation, ctx: &mut TxContext) {
 
   }
 

@@ -1,16 +1,11 @@
 module suibond::foundation {
-  use std::string::{Self, String};
-  use sui::coin::{Self, Coin};
-  use sui::sui::{Self, SUI};
+  use std::string::{ String };
+  use sui::coin::{ Coin };
+  use sui::sui::{ SUI };
   use sui::object_table::{Self, ObjectTable};
   use suibond::developer::{Proposal};
+  use suibond::foundation_cap::{Self, FoundationCap};
 
-  public struct FoundationCap has key, store {
-    id: UID,
-    owner: address,
-    name: String,
-    foundation_ids: vector<ID>,
-  }
 
   public struct Foundation has key, store {
     id: UID,
@@ -47,17 +42,16 @@ module suibond::foundation {
     completed_proposal_ids: vector<ID>,
   }
 
-  #[allow(lint(self_transfer))]
-  public fun mint_foundation_cap(name: String, ctx: &mut TxContext) {
-    transfer::public_transfer(FoundationCap{
-      id: object::new(ctx),
-      owner: ctx.sender(),
-      name: name,
-      foundation_ids: vector<ID>[],
-    }, ctx.sender())
+  // ================= METHODS =================
+
+  public fun id(foundation: &Foundation): ID {
+    object::id(foundation)
   }
 
-  public fun new_foundation(
+  // ================= FUNCTIONS =================
+
+
+  public fun new(
     foundation_cap: ID, 
     name: String,
     ctx: &mut TxContext
