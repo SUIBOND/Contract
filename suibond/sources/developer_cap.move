@@ -14,7 +14,7 @@ module suibond::developer_cap {
 
   // ================= FUNCTIONS =================
 
-  public fun new(name: String, ctx: &mut TxContext): DeveloperCap {
+  fun new(name: String, ctx: &mut TxContext): DeveloperCap {
     DeveloperCap{
       id: object::new(ctx),
       owner: ctx.sender(),

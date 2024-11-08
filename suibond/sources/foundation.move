@@ -4,8 +4,7 @@ module suibond::foundation {
   use sui::sui::{ SUI };
   use sui::object_table::{Self, ObjectTable};
   use suibond::developer::{Proposal};
-  use suibond::foundation_cap::{Self, FoundationCap};
-
+  use suibond::bounty::{Self, Bounty};
 
   public struct Foundation has key, store {
     id: UID,
@@ -16,36 +15,15 @@ module suibond::foundation {
     bounty_table_keys: vector<String>
   }
 
-  public struct Bounty has key, store {
-    id: UID,
-    foundation: ID,
-
-    name: String,
-    bounty_type: u64,
-    risk_percent: u64,
-    min_amount: u64,
-    max_amount: u64,
-
-    coin_balance: Coin<SUI>, // need sui coin when create Bounty object
-
-    proposals: ProposalsOfBounty
-  }
-
-  public struct ProposalsOfBounty has store {
-    unconfirmed_proposal: ObjectTable<ID, Proposal>, // developer can get back Proposal with stake when the Proposal has expired
-    unconfirmed_proposal_ids: vector<ID>,
-
-    processing_proposal: ObjectTable<ID, Proposal>, 
-    processing_proposal_ids: vector<ID>,
-
-    completed_proposal: ObjectTable<ID, Proposal>, 
-    completed_proposal_ids: vector<ID>,
-  }
-
   // ================= METHODS =================
 
   public fun id(foundation: &Foundation): ID {
     object::id(foundation)
+  }
+
+  public fun add_bounty(foundation: &mut Foundation, bounty: Bounty) {
+    foundation.bounty_table_keys.push_back(bounty.name());
+    foundation.bounty_table.add(bounty.name(), bounty);
   }
 
   // ================= FUNCTIONS =================
@@ -65,6 +43,31 @@ module suibond::foundation {
       bounty_table_keys: vector<String>[]
     }
   }
+
+  public fun add_bounty_to_foundation(
+    foundation: &mut Foundation, 
+    name: String,
+    bounty_type: u64,
+    risk_percent: u64,
+    min_amount: u64,
+    max_amount: u64,
+    coin: Coin<SUI>,
+    ctx: &mut TxContext) {
+    let bounty = bounty::new(
+      foundation.id(),
+      name,
+      bounty_type,
+      risk_percent,
+      min_amount,
+      max_amount,
+      coin,
+      ctx);
+
+    foundation.add_bounty(bounty);
+  }
+
+
+
 
   public fun function_for_copy(
     ctx: &mut TxContext

@@ -37,20 +37,29 @@ module suibond::suibond {
     transfer::public_transfer(foundation, ctx.sender());
   }
 
+  //FOUNDATION
+  entry fun add_bounty_to_foundation(
+    foundation: &mut Foundation, 
+    name: String,
+    bounty_type: u64,
+    risk_percent: u64,
+    min_amount: u64,
+    max_amount: u64,
+    coin: Coin<SUI>,
+    ctx: &mut TxContext) {
+    foundation.add_bounty_to_foundation(name, bounty_type, risk_percent, min_amount, max_amount, coin, ctx);
+  }
+
   // //FOUNDATION
   // entry fun update_bounty(ctx: &mut TxContext) {
 
   // }
 
   //FOUNDATION
-  entry fun register_foundation(platform: &mut SuibondPlatform, foundation: Foundation, ctx: &mut TxContext) {
+  // entry fun register_foundation(platform: &mut SuibondPlatform, foundation: Foundation, ctx: &mut TxContext) {
 
-  }
+  // }
 
-  //FOUNDATION
-  entry fun add_bounty_to_foundation(ctx: &mut TxContext) {
-
-  }
 
 
   // -----------------------------------------

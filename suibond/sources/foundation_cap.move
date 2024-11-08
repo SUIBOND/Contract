@@ -21,7 +21,7 @@ module suibond::foundation_cap {
 
   // ================= FUNCTIONS =================
 
-  public fun new(name: String, ctx: &mut TxContext): FoundationCap {
+  fun new(name: String, ctx: &mut TxContext): FoundationCap {
     FoundationCap{
       id: object::new(ctx),
       owner: ctx.sender(),
