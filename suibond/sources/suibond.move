@@ -24,13 +24,9 @@ module suibond::suibond {
   // -----------------------------------------
   // STEP 1 : Create and Register Foundation
   //FOUNDATION
-  entry fun create_foundation(ctx: &mut TxContext) {
-
-  }
-
-  //FOUNDATION
-  entry fun add_bounty_to_foundation(ctx: &mut TxContext) {
-
+  entry fun create_foundation(foundation_cap: ID, name: String, ctx: &mut TxContext) {
+    let foundation = foundation::new_foundation(foundation_cap, name, ctx);
+    transfer::public_transfer(foundation, ctx.sender());
   }
 
   // //FOUNDATION
@@ -42,6 +38,12 @@ module suibond::suibond {
   entry fun register_foundation(ctx: &mut TxContext) {
 
   }
+
+  //FOUNDATION
+  entry fun add_bounty_to_foundation(ctx: &mut TxContext) {
+
+  }
+
 
   // -----------------------------------------
   // STEP 2-1 : Create Project
@@ -74,6 +76,13 @@ module suibond::suibond {
 
   }
 
+  //FOUNDATION
+  entry fun reject_proposal(ctx: &mut TxContext) {
+
+  }
+
+  // automatically rejected
+
 
   // -----------------------------------------
   // STEP 4-1 : Process Milestone or Get Back Stake Amount For Unconfirmed Proposal
@@ -84,6 +93,11 @@ module suibond::suibond {
 
   // DEVELOPER
   entry fun submit_milestone(ctx: &mut TxContext) {
+
+  }
+
+  // DEVELOPER
+  entry fun request_extend_deadline_of_milestone(ctx: &mut TxContext) {
 
   }
 

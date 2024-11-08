@@ -2,7 +2,7 @@ module suibond::foundation {
   use std::string::{Self, String};
   use sui::coin::{Self, Coin};
   use sui::sui::{Self, SUI};
-  use sui::object_table::{ObjectTable};
+  use sui::object_table::{Self, ObjectTable};
   use suibond::developer::{Proposal};
 
   public struct FoundationCap has key, store {
@@ -55,6 +55,27 @@ module suibond::foundation {
       name: name,
       foundation_ids: vector<ID>[],
     }, ctx.sender())
+  }
+
+  public fun new_foundation(
+    foundation_cap: ID, 
+    name: String,
+    ctx: &mut TxContext
+    ) : Foundation {
+    Foundation {
+      id: object::new(ctx),
+      owner: ctx.sender(),
+      foundation_cap: foundation_cap,
+      name: name,
+      bounty_table: object_table::new(ctx),
+      bounty_table_keys: vector<String>[]
+    }
+  }
+
+  public fun function_for_copy(
+    ctx: &mut TxContext
+    ) {
+
   }
 
 }
