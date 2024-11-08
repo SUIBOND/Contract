@@ -65,7 +65,6 @@ module suibond::suibond {
   }
 
 
-
   // -----------------------------------------
   // STEP 2-1 : Create Project
   // DEVELOPER
