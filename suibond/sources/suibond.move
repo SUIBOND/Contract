@@ -40,7 +40,7 @@ module suibond::suibond {
   }
 
   //FOUNDATION
-  entry fun add_bounty_to_foundation(
+  entry fun create_and_add_bounty_to_foundation(
     platform: &mut SuibondPlatform, 
     foundation: &Foundation, 
     name: String,
