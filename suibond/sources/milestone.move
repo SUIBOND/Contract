@@ -1,5 +1,7 @@
 module suibond::milestone {
   use std::string::{String};
+  use std::option::{Self, Option};
+
 
   public struct Milestone has key, store {
     id: UID,
@@ -10,7 +12,9 @@ module suibond::milestone {
 
     duration_epochs: u64,
 
-    state: u64
+    state: u64,
+
+    milestone_submission: Option<ID>
   }
 
   // ================= METHODS =================
@@ -31,6 +35,7 @@ module suibond::milestone {
         description: description,
         duration_epochs: duration_epochs,
         state: 0,
+        milestone_submission: option::none()
       }
   }
 }
