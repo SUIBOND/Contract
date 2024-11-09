@@ -9,6 +9,7 @@ module suibond::developer_cap {
     owner: address,
     name: String,
     unsubmitted_proposal: vector<ID>,
+    processing_proposal: vector<ID>,
     completed_proposal: vector<ID>,
   }
 
@@ -19,6 +20,8 @@ module suibond::developer_cap {
   }
 
   public fun add_unsubmitted_proposal(developer_cap: &mut DeveloperCap, proposal: Proposal) {
+    assert!(developer_cap.unsubmitted_proposal.length() <= 1, 100); // for version 1 (easy version)
+
     developer_cap.unsubmitted_proposal.push_back(proposal.id());
     dynamic_object_field::add(&mut developer_cap.id, proposal.id(), proposal);
   }
@@ -31,6 +34,7 @@ module suibond::developer_cap {
       owner: ctx.sender(),
       name: name,
       unsubmitted_proposal: vector<ID>[],
+      processing_proposal: vector<ID>[],
       completed_proposal: vector<ID>[],
     }
   }
