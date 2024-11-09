@@ -47,7 +47,6 @@ module suibond::proposal {
     foundation_id: ID, 
     bounty_id: ID, 
     proposal_title: String, 
-    stake: Coin<SUI>, 
 
     project_title: String,
     project_description: String,
@@ -71,7 +70,7 @@ module suibond::proposal {
         bounty: bounty_id,
         title: proposal_title,
         project: project,
-        stake: stake,
+        stake: coin::zero(ctx),
       }
 
   }

@@ -62,14 +62,13 @@ module suibond::suibond {
     foundation: &Foundation, 
     bounty: &Bounty, 
     proposal_title: String, 
-    stake: Coin<SUI>, 
 
     project_title: String,
     project_description: String,
     grant_size: u64,
     duration_epochs: u64,
     ctx: &mut TxContext) {
-      let proposal = proposal::new( developer_cap.id(), foundation.id(), bounty.id(), proposal_title, stake, project_title, project_description, grant_size, duration_epochs, ctx);
+      let proposal = proposal::new( developer_cap.id(), foundation.id(), bounty.id(), proposal_title, project_title, project_description, grant_size, duration_epochs, ctx);
       developer_cap.add_unsubmitted_proposal(proposal);
   }
 
