@@ -1,6 +1,8 @@
 
 module suibond::developer_cap {
   use std::string::{String};
+  use sui::dynamic_object_field::{Self};
+  use suibond::proposal::{Proposal};
 
   public struct DeveloperCap has key, store {
     id: UID,
@@ -11,6 +13,15 @@ module suibond::developer_cap {
   }
 
   // ================= METHODS =================
+
+  public fun id(developer_cap: &DeveloperCap): ID {
+    object::id(developer_cap)
+  }
+
+  public fun add_unsubmitted_proposal(developer_cap: &mut DeveloperCap, proposal: Proposal) {
+    developer_cap.unsubmitted_proposal.push_back(proposal.id());
+    dynamic_object_field::add(&mut developer_cap.id, proposal.id(), proposal);
+  }
 
   // ================= FUNCTIONS =================
 

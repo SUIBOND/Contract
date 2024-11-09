@@ -3,7 +3,7 @@ module suibond::bounty {
   use sui::coin::{ Coin };
   use sui::sui::{ SUI };
   use sui::object_table::{Self, ObjectTable};
-  use suibond::developer::{Proposal};
+  use suibond::proposal::{Proposal};
 
   public struct Bounty has key, store {
     id: UID,

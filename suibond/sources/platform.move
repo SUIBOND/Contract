@@ -17,6 +17,11 @@ module suibond::platform {
 
   // ================= METHODS =================
 
+  public fun register_foundation(platform: &mut SuibondPlatform, foundation: Foundation) {
+    platform.foundation_ids.push_back(foundation.id());
+    dynamic_object_field::add(&mut platform.id, foundation.id(), foundation);
+  }
+
   public fun borrow_foundation_mut(platform: &mut SuibondPlatform, foundation: &Foundation): &mut Foundation{
     platform.foundation_table.borrow_mut(foundation.id())
   }
@@ -59,9 +64,5 @@ module suibond::platform {
     })
   }
 
-  public fun register_foundation(platform: &mut SuibondPlatform, foundation: Foundation) {
-    platform.foundation_ids.push_back(foundation.id());
-    dynamic_object_field::add(&mut platform.id, foundation.id(), foundation);
-  }
 
 }

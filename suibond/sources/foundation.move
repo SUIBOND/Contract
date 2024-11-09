@@ -3,7 +3,6 @@ module suibond::foundation {
   use sui::coin::{ Coin };
   use sui::sui::{ SUI };
   use sui::object_table::{Self, ObjectTable};
-  use suibond::developer::{Proposal};
   use suibond::bounty::{Self, Bounty};
 
   public struct Foundation has key, store {
@@ -29,28 +28,9 @@ module suibond::foundation {
     foundation.foundation_cap
   }
 
-
   public fun add_bounty(foundation: &mut Foundation, bounty: Bounty) {
     foundation.bounty_table_keys.push_back(bounty.name());
     foundation.bounty_table.add(bounty.name(), bounty);
-  }
-
-  // ================= FUNCTIONS =================
-
-
-  public fun new(
-    foundation_cap: ID, 
-    name: String,
-    ctx: &mut TxContext
-    ) : Foundation {
-      Foundation {
-        id: object::new(ctx),
-        owner: ctx.sender(),
-        foundation_cap: foundation_cap,
-        name: name,
-        bounty_table: object_table::new(ctx),
-        bounty_table_keys: vector<String>[]
-      }
   }
 
   public fun add_bounty_to_foundation(
@@ -74,6 +54,24 @@ module suibond::foundation {
 
       foundation.add_bounty(bounty);
   }
+  // ================= FUNCTIONS =================
+
+
+  public fun new(
+    foundation_cap: ID, 
+    name: String,
+    ctx: &mut TxContext
+    ) : Foundation {
+      Foundation {
+        id: object::new(ctx),
+        owner: ctx.sender(),
+        foundation_cap: foundation_cap,
+        name: name,
+        bounty_table: object_table::new(ctx),
+        bounty_table_keys: vector<String>[]
+      }
+  }
+
 
 
 
