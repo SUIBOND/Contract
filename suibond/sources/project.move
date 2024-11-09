@@ -1,6 +1,6 @@
 module suibond::project {
   use std::string::{String};
-  use suibond::milestone::{Milestone};
+  use suibond::milestone::{Self, Milestone};
 
   public struct Project has key, store {
     id: UID,
@@ -21,7 +21,30 @@ module suibond::project {
 
 
   // ================= METHODS =================
+  
 
+  public fun add_milestone(
+    project: &mut Project,
+    milestone: Milestone) {
+      project.milestones.push_back(milestone)
+  }
+
+  public fun create_and_add_milestone(
+    project: &mut Project,
+    milestone_number: u64,
+    title: String,
+    description: String,
+    duration_epochs: u64,
+    ctx: &mut TxContext) {
+      let milestone = milestone::new(
+        milestone_number,
+        title,
+        description,
+        duration_epochs,
+        ctx
+      );
+      project.add_milestone(milestone);
+  }
 
 
   // ================= FUNCTIONS =================

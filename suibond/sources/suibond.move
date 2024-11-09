@@ -2,6 +2,7 @@
 module suibond::suibond {
   use suibond::developer_cap::{Self, DeveloperCap};
   use suibond::proposal::{Self, Proposal};
+  use suibond::project::{Self, Project};
   use suibond::foundation_cap::{Self, FoundationCap};
   use suibond::foundation::{Self, Foundation};
   use suibond::bounty::{Self, Bounty};
@@ -68,24 +69,19 @@ module suibond::suibond {
     grant_size: u64,
     duration_epochs: u64,
     ctx: &mut TxContext) {
-      let proposal = proposal::new(
-        developer_cap.id(),
-        foundation.id(), 
-        bounty.id(), 
-        proposal_title, 
-        stake,
-        project_title,
-        project_description,
-        grant_size,
-        duration_epochs,
-        ctx
-      );
+      let proposal = proposal::new( developer_cap.id(), foundation.id(), bounty.id(), proposal_title, stake, project_title, project_description, grant_size, duration_epochs, ctx);
       developer_cap.add_unsubmitted_proposal(proposal);
   }
 
   // DEVELOPER
-  entry fun add_milestone_to_project(ctx: &mut TxContext) {
-
+  entry fun add_milestone_to_project(
+    proposal: &mut Proposal,
+    milestone_number: u64,
+    title: String,
+    description: String,
+    duration_epochs: u64,
+    ctx: &mut TxContext) {
+      proposal.create_and_add_milestone(milestone_number, title, description, duration_epochs, ctx)
   }
 
   // // DEVELOPER

@@ -17,4 +17,20 @@ module suibond::milestone {
 
 
   // ================= FUNCTIONS =================
+
+  public fun new(
+    milestone_number: u64,
+    title: String,
+    description: String,
+    duration_epochs: u64,
+    ctx: &mut TxContext): Milestone {
+      Milestone {
+        id: object::new(ctx),
+        milestone_number: milestone_number,
+        title: title,
+        description: description,
+        duration_epochs: duration_epochs,
+        state: 0,
+      }
+  }
 }
