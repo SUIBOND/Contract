@@ -12,7 +12,6 @@ module suibond::proposal {
     developer_cap: ID,
     foundation: ID,
     bounty: ID,
-
     title: String,
     project: Project,
 
@@ -38,6 +37,16 @@ module suibond::proposal {
         description, 
         duration_epochs, 
         ctx)
+  }
+
+  public fun stake(
+    proposal: &mut Proposal,
+    stake: Coin<SUI>) {
+      proposal.stake.join(stake);
+  }
+  
+  public fun set_project_state_submitted( proposal: &mut Proposal) {
+      proposal.project.set_state_submitted();
   }
   // ================= FUNCTIONS =================
 

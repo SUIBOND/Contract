@@ -5,6 +5,7 @@ module suibond::platform {
   use sui::sui::{Self, SUI};
   use sui::object_table::{Self, ObjectTable};
   use sui::dynamic_object_field::{Self};
+  use suibond::proposal::{Proposal};
   use suibond::foundation::{Foundation};
   use suibond::bounty::{Self, Bounty};
   
@@ -51,6 +52,12 @@ module suibond::platform {
         coin,
         ctx);
       platform.add_bounty(foundation, bounty);
+  }
+
+  public fun add_proposal(platform: &mut SuibondPlatform, foundation: &Foundation, bounty: &Bounty, proposal: Proposal){
+    let foundation = platform.borrow_foundation_mut(foundation);
+    let bounty = foundation.borrow_bounty_mut(bounty);
+    bounty.add_unconfirmed_proposal(proposal);
   }
 
   // ================= FUNCTIONS =================

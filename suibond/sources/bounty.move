@@ -40,6 +40,11 @@ module suibond::bounty {
     bounty.name
   }
 
+  public fun add_unconfirmed_proposal(bounty: &mut Bounty, proposal: Proposal){
+    bounty.proposals.unconfirmed_proposal_ids.push_back(proposal.id());
+    bounty.proposals.unconfirmed_proposal.add(proposal.id(), proposal);
+  }
+
   // ================= FUNCTIONS =================
 
   public fun new(

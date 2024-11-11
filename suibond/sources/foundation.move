@@ -28,6 +28,10 @@ module suibond::foundation {
     foundation.foundation_cap
   }
 
+  public fun borrow_bounty_mut(foundation: &mut Foundation, bounty: &Bounty): &mut Bounty {
+    foundation.bounty_table.borrow_mut(bounty.name())
+  }
+
   public fun add_bounty(foundation: &mut Foundation, bounty: Bounty) {
     foundation.bounty_table_keys.push_back(bounty.name());
     foundation.bounty_table.add(bounty.name(), bounty);

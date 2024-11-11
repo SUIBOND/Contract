@@ -18,6 +18,11 @@ module suibond::project {
 
     state: u64
   }
+  
+  const UNSUBMITTED: u64 = 0;
+  const SUBMITTED: u64 = 1;
+  const PROCESSING: u64 = 2;
+  const COMPLETED: u64 = 3;
 
 
   // ================= METHODS =================
@@ -44,6 +49,10 @@ module suibond::project {
         ctx
       );
       project.add_milestone(milestone);
+  }
+
+  public fun set_state_submitted(project: &mut Project) {
+      project.state = SUBMITTED;
   }
 
 
