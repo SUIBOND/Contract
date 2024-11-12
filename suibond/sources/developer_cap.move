@@ -73,8 +73,6 @@ module suibond::developer_cap {
     proposal.stake(stake);
     proposal.set_project_state_submitted();
     developer_cap.submit_proposal(platform, foundation_id, bounty_id, proposal);
-
-
   }
 
   // ================= FUNCTIONS =================

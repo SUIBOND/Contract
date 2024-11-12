@@ -1,6 +1,8 @@
 module suibond::project {
   use std::string::{String};
   use suibond::milestone::{Self, Milestone};
+  use sui::coin::{Self, Coin};
+  use sui::sui::{Self, SUI};
 
   public struct Project has key, store {
     id: UID,
@@ -28,9 +30,7 @@ module suibond::project {
   // ================= METHODS =================
   
 
-  public fun add_milestone(
-    project: &mut Project,
-    milestone: Milestone) {
+  public fun add_milestone( project: &mut Project, milestone: Milestone) {
       project.milestones.push_back(milestone)
   }
 
@@ -51,8 +51,16 @@ module suibond::project {
       project.add_milestone(milestone);
   }
 
+  public fun add_stake_amount(project: &mut Project, stake: &Coin<SUI>) {
+    project.current_stake_amount = project.current_stake_amount + stake.balance().value();
+  }
+
   public fun set_state_submitted(project: &mut Project) {
       project.state = SUBMITTED;
+  }
+
+  public fun set_state_processing(project: &mut Project) {
+      project.state = PROCESSING;
   }
 
 

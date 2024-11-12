@@ -39,14 +39,17 @@ module suibond::proposal {
         ctx)
   }
 
-  public fun stake(
-    proposal: &mut Proposal,
-    stake: Coin<SUI>) {
-      proposal.stake.join(stake);
+  public fun stake(proposal: &mut Proposal, stake: Coin<SUI>) {
+    proposal.project.add_stake_amount(&stake);
+    proposal.stake.join(stake);
   }
   
   public fun set_project_state_submitted( proposal: &mut Proposal) {
       proposal.project.set_state_submitted();
+  }
+
+  public fun set_project_state_processing( proposal: &mut Proposal) {
+      proposal.project.set_state_processing();
   }
   // ================= FUNCTIONS =================
 
