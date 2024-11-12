@@ -3,6 +3,9 @@ module suibond::foundation_cap {
   use std::string::{String};
   use sui::dynamic_object_field::{Self};
   use suibond::foundation::{Self, Foundation};
+  use suibond::bounty::{Self, Bounty};
+  use suibond::platform::{SuibondPlatform};
+  use suibond::proposal::{Self, Proposal};
 
   public struct FoundationCap has key, store {
     id: UID,
@@ -25,6 +28,22 @@ module suibond::foundation_cap {
     assert!(foundation_cap.foundation_ids.length() <= 1, 1); // for easy version. it can store only one foundation
 
     foundation_cap.foundation_ids.push_back(foundation.id());
+  }
+
+  // public fun check_owner
+
+  public fun confrim_proposal(
+    foundation_cap: &FoundationCap, 
+    platform: &mut SuibondPlatform, 
+    foundation: &Foundation,
+    bounty: &Bounty,
+    proposal: &Proposal,
+    ctx: &mut TxContext) {
+      // foundation_cap.check_owner()
+
+      // platform.confirm_unconfirmed_proposal(foundation, bounty, proposal);
+
+
   }
 
   // ================= FUNCTIONS =================

@@ -20,21 +20,22 @@ module suibond::platform {
 
   public fun register_foundation(platform: &mut SuibondPlatform, foundation: Foundation) {
     platform.foundation_ids.push_back(foundation.id());
-    dynamic_object_field::add(&mut platform.id, foundation.id(), foundation);
+    platform.foundation_table.add(foundation.id(), foundation);
   }
 
-  public fun borrow_foundation_mut(platform: &mut SuibondPlatform, foundation: &Foundation): &mut Foundation{
-    platform.foundation_table.borrow_mut(foundation.id())
+  public fun borrow_foundation_mut(platform: &mut SuibondPlatform, foundation_id: ID): &mut Foundation{
+    platform.foundation_table.borrow_mut(foundation_id)
   }
 
-  public fun add_bounty(platform: &mut SuibondPlatform, foundation: &Foundation, bounty: Bounty){
-    let foundation = platform.borrow_foundation_mut(foundation);
+  public fun add_bounty(platform: &mut SuibondPlatform, foundation_id: ID, bounty: Bounty){
+    let foundation = platform.borrow_foundation_mut(foundation_id);
     foundation.add_bounty(bounty);
   }
 
   public fun create_and_add_bounty(
     platform: &mut SuibondPlatform, 
-    foundation: &Foundation, 
+    // foundation: &Foundation, 
+    foundation_id: ID, 
     name: String,
     bounty_type: u64,
     risk_percent: u64,
@@ -43,7 +44,7 @@ module suibond::platform {
     coin: Coin<SUI>,
     ctx: &mut TxContext) {
       let bounty = bounty::new(
-        foundation.id(),
+        foundation_id,
         name,
         bounty_type,
         risk_percent,
@@ -51,13 +52,24 @@ module suibond::platform {
         max_amount,
         coin,
         ctx);
-      platform.add_bounty(foundation, bounty);
+      platform.add_bounty(foundation_id, bounty);
   }
 
-  public fun add_proposal(platform: &mut SuibondPlatform, foundation: &Foundation, bounty: &Bounty, proposal: Proposal){
-    let foundation = platform.borrow_foundation_mut(foundation);
-    let bounty = foundation.borrow_bounty_mut(bounty);
-    bounty.add_unconfirmed_proposal(proposal);
+  public fun add_proposal(platform: &mut SuibondPlatform, foundation_id: ID, bounty_id: ID, proposal: Proposal){
+    let foundation = platform.borrow_foundation_mut(foundation_id);
+    foundation.add_proposal(bounty_id, proposal);
+  }
+
+public fun confirm_unconfirmed_proposal(
+    platform: &mut SuibondPlatform, 
+    foundation_id: ID, 
+    bounty_id: ID, 
+    proposal: &Proposal){
+      let foundation = platform.borrow_foundation_mut(foundation_id);
+      let bounty = foundation.borrow_bounty_mut(bounty_id);
+
+
+
   }
 
   // ================= FUNCTIONS =================

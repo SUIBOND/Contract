@@ -13,6 +13,7 @@ module suibond::developer_cap {
     id: UID,
     owner: address,
     name: String,
+    // url: String,
     unsubmitted_proposal: vector<ID>,
     submitted_proposal: vector<ID>,
     completed_proposal: vector<ID>,
@@ -37,24 +38,24 @@ module suibond::developer_cap {
     dynamic_object_field::remove(&mut developer_cap.id, proposal_id)
   }
 
-  public fun submit_proposal(developer_cap: &mut DeveloperCap, platform: &mut SuibondPlatform, foundation: &Foundation, bounty: &Bounty, proposal: Proposal) {
+  public fun submit_proposal(developer_cap: &mut DeveloperCap, platform: &mut SuibondPlatform, foundation_id: ID, bounty_id: ID, proposal: Proposal) {
     developer_cap.submitted_proposal.push_back(proposal.id());
-    platform.add_proposal(foundation, bounty, proposal)
+    platform.add_proposal(foundation_id, bounty_id, proposal)
   }
 
   
   public fun propose_and_stake(
     developer_cap: &mut DeveloperCap,
     platform: &mut SuibondPlatform,
-    foundation: &Foundation,
-    bounty: &Bounty,
+    foundation_id: ID,
+    bounty_id: ID,
     stake: Coin<SUI>,
     ctx: &mut TxContext
   ) {
     let mut proposal = developer_cap.remove_unsubmitted_proposal();
     proposal.stake(stake);
     proposal.set_project_state_submitted();
-    developer_cap.submit_proposal(platform, foundation, bounty, proposal);
+    developer_cap.submit_proposal(platform, foundation_id, bounty_id, proposal);
 
 
   }

@@ -25,6 +25,11 @@ module suibond::suibond {
     developer_cap::mint(name, ctx);
   }
 
+  // DEVELOPER
+  entry fun update_developer_info(name: String, url: String, ctx: &mut TxContext) {
+    // developer_cap::mint(name, ctx);
+  }
+
   //FOUNDATION
   entry fun mint_foundation_cap(name: String, ctx: &mut TxContext) {
     foundation_cap::mint(name, ctx);
@@ -43,7 +48,8 @@ module suibond::suibond {
   //FOUNDATION
   entry fun create_and_add_bounty_to_foundation(
     platform: &mut SuibondPlatform, 
-    foundation: &Foundation, 
+    // foundation: &Foundation, 
+    foundation_id: ID, 
     name: String,
     bounty_type: u64,
     risk_percent: u64,
@@ -51,7 +57,7 @@ module suibond::suibond {
     max_amount: u64,
     coin: Coin<SUI>,
     ctx: &mut TxContext) {
-      platform.create_and_add_bounty(foundation, name, bounty_type, risk_percent, min_amount, max_amount, coin, ctx);
+      platform.create_and_add_bounty(foundation_id, name, bounty_type, risk_percent, min_amount, max_amount, coin, ctx);
   }
 
   // -----------------------------------------
@@ -93,20 +99,26 @@ module suibond::suibond {
   entry fun propose_and_stake(
     developer_cap: &mut DeveloperCap,
     platform: &mut SuibondPlatform,
-    foundation: &Foundation,
-    bounty: &Bounty,
+    foundation_id: ID,
+    bounty_id: ID,
     stake: Coin<SUI>,
     ctx: &mut TxContext
     ) {
-      developer_cap.propose_and_stake(platform, foundation, bounty, stake, ctx);
+      developer_cap.propose_and_stake(platform, foundation_id, bounty_id, stake, ctx);
   }
 
 
   // -----------------------------------------
   // STEP 3 : Confirm Proposal
   //FOUNDATION
-  entry fun confirm_proposal(ctx: &mut TxContext) {
-
+  entry fun confirm_proposal(
+    foundation_cap: &FoundationCap,
+    platform: &mut SuibondPlatform,
+    foundation: &Foundation,
+    bounty: &Bounty,
+    proposal: &Proposal,
+    ctx: &mut TxContext) {
+      // foundation_cap.confrim_proposal();
   }
 
   //FOUNDATION
