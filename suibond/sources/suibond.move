@@ -117,11 +117,11 @@ module suibond::suibond {
   entry fun confirm_proposal(
     foundation_cap: &FoundationCap,
     platform: &mut SuibondPlatform,
-    foundation: &Foundation,
-    bounty: &Bounty,
-    proposal: &Proposal,
+    foundation_id: ID,
+    bounty_id: ID,
+    proposal_id: ID,
     ctx: &mut TxContext) {
-      // foundation_cap.confrim_proposal();
+      foundation_cap.confrim_proposal(platform, foundation_id, bounty_id, proposal_id, ctx);
   }
 
   //FOUNDATION

@@ -64,12 +64,9 @@ public fun confirm_unconfirmed_proposal(
     platform: &mut SuibondPlatform, 
     foundation_id: ID, 
     bounty_id: ID, 
-    proposal: &Proposal){
+    proposal_id: ID){
       let foundation = platform.borrow_foundation_mut(foundation_id);
-      let bounty = foundation.borrow_bounty_mut(bounty_id);
-
-
-
+      foundation.confirm_unconfirmed_proposal(bounty_id, proposal_id);
   }
 
   // ================= FUNCTIONS =================

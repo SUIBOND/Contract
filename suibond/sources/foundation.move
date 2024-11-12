@@ -66,13 +66,12 @@ module suibond::foundation {
   }
 
   public fun confirm_unconfirmed_proposal(
-      foundation: &mut Foundation, 
-      bounty: &Bounty, 
-      proposal: &Proposal){
-        // let bounty = foundation.bounty_table.borrow_mut(bounty.id())
-
-
-    }
+    foundation: &mut Foundation, 
+    bounty_id: ID, 
+    proposal_id: ID){
+      let bounty = foundation.bounty_table.borrow_mut(bounty_id);
+      bounty.confirm_unconfirmed_proposal(proposal_id);
+  }
   // ================= FUNCTIONS =================
 
 

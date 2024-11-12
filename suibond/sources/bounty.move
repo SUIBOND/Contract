@@ -45,6 +45,13 @@ module suibond::bounty {
     bounty.proposals.unconfirmed_proposal.add(proposal.id(), proposal);
   }
 
+  public fun confirm_unconfirmed_proposal(
+    bounty: &mut Bounty, 
+    proposal_id: ID){
+      let proposal = bounty.proposals.unconfirmed_proposal.borrow_mut(proposal_id);
+      proposal.set_project_state_processing();
+  }
+
   // ================= FUNCTIONS =================
 
   public fun new(
