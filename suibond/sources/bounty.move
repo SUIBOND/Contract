@@ -22,8 +22,11 @@ module suibond::bounty {
 
   public struct ProposalsOfBounty has store {
     unconfirmed_proposals: ObjectTable<ID, Proposal>, // developer can get back Proposal with stake when the Proposal has expired
+    unconfirmed_proposal_ids: vector<ID>,
     processing_proposals: ObjectTable<ID, Proposal>, 
+    processing_proposal_ids: vector<ID>,
     completed_proposals: ObjectTable<ID, Proposal>, 
+    completed_proposal_ids: vector<ID>,
   }
   // ================= METHODS =================
 
@@ -40,14 +43,21 @@ module suibond::bounty {
   }
 
   public fun add_unconfirmed_proposal(bounty: &mut Bounty, proposal: Proposal){
+    bounty.proposals.unconfirmed_proposal_ids.push_back(proposal.id());
     bounty.proposals.unconfirmed_proposals.add(proposal.id(), proposal);
   }
 
   public fun remove_unconfirmed_proposal(bounty: &mut Bounty, proposal_id: ID): Proposal{
-    bounty.proposals.unconfirmed_proposals.remove(proposal_id)
+    let proposal = bounty.proposals.unconfirmed_proposals.remove(proposal_id);
+    let (is_contain, proposal_index) = bounty.proposals.unconfirmed_proposal_ids.index_of(&proposal.id());
+    if (is_contain) {
+      bounty.proposals.unconfirmed_proposal_ids.remove(proposal_index);
+    };
+    proposal
   }
 
   public fun add_processing_proposal(bounty: &mut Bounty, proposal: Proposal){
+    bounty.proposals.processing_proposal_ids.push_back(proposal.id());
     bounty.proposals.processing_proposals.add(proposal.id(), proposal);
   }
 
@@ -92,8 +102,11 @@ module suibond::bounty {
       fund: coin,
       proposals: ProposalsOfBounty{
         unconfirmed_proposals: object_table::new<ID, Proposal>(ctx),
+        unconfirmed_proposal_ids: vector<ID>[],
         processing_proposals: object_table::new<ID, Proposal>(ctx),
+        processing_proposal_ids: vector<ID>[],
         completed_proposals: object_table::new<ID, Proposal>(ctx),
+        completed_proposal_ids: vector<ID>[],
       }
     }
   }
