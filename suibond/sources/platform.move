@@ -64,9 +64,9 @@ module suibond::platform {
       platform.add_bounty(foundation_id, bounty);
   }
 
-  public fun get_stake_amount(platform: &mut SuibondPlatform, foundation_id: ID, bounty_id: ID, proposal_id: ID): u64{
+  public fun risk_percent(platform: &mut SuibondPlatform, foundation_id: ID, bounty_id: ID): u64{
     let foundation = platform.borrow_foundation_mut(foundation_id);
-    foundation.get_stake_amount(bounty_id, proposal_id)
+    foundation.risk_percent(bounty_id)
   }
 
   public fun add_proposal(platform: &mut SuibondPlatform, foundation_id: ID, bounty_id: ID, proposal: Proposal){
@@ -106,6 +106,15 @@ module suibond::platform {
 
   // ================= FUNCTIONS =================
 
+  public fun new(ctx: &mut TxContext): SuibondPlatform {
+    SuibondPlatform{
+      id: object::new(ctx),
+      owner: ctx.sender(),
+      foundation_table: object_table::new(ctx),
+      foundation_ids: vector<ID>[]
+    }
+  }
+
   public fun create_and_share(ctx: &mut TxContext) {
     transfer::share_object( SuibondPlatform{
       id: object::new(ctx),
@@ -115,5 +124,14 @@ module suibond::platform {
     })
   }
 
+
+  // ================= TEST FUNCTIONS =================
+  
+  #[test_only]
+  public fun delete(platform: SuibondPlatform) {
+    let SuibondPlatform {id: id, owner: _, foundation_table: foundation_table, foundation_ids: _} = platform;
+    foundation_table.destroy_empty();
+    object::delete(id);
+  } 
 
 }

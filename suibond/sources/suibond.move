@@ -10,11 +10,9 @@ module suibond::suibond {
   use sui::coin::{Coin};
   use sui::sui::{SUI};
 
-
   fun init(ctx: &mut TxContext) {
     platform::create_and_share(ctx);
   }
-
 
   // -----------------------------------------
   // STEP 0 : Identify
@@ -37,14 +35,14 @@ module suibond::suibond {
   // -----------------------------------------
   // STEP 1 : Create and Register Foundation
   //FOUNDATION
-  entry fun create_and_register_foundation(foundation_cap: &mut FoundationCap, name: String, platform: &mut SuibondPlatform, ctx: &mut TxContext) {
+  entry public fun create_and_register_foundation(foundation_cap: &mut FoundationCap, name: String, platform: &mut SuibondPlatform, ctx: &mut TxContext) {
     let foundation = foundation::new(foundation_cap.id(), name, ctx);
     foundation_cap.add_foundation(&foundation);
     platform.register_foundation(foundation);
   }
 
   //FOUNDATION
-  entry fun create_and_add_bounty_to_foundation(
+  entry public fun create_and_add_bounty_to_foundation(
     platform: &mut SuibondPlatform, 
     foundation_id: ID, 
     name: String,
@@ -60,7 +58,7 @@ module suibond::suibond {
   // -----------------------------------------
   // STEP 2-1 : Create Proposal with Project
   // DEVELOPER
-  entry fun create_proposal(
+  entry public fun create_proposal(
     developer_cap: &mut DeveloperCap, 
     foundation_id: ID, 
     bounty_id: ID, 
@@ -74,7 +72,7 @@ module suibond::suibond {
   }
 
   // DEVELOPER
-  entry fun add_milestone_to_project(
+  entry public fun add_milestone_to_project(
     developer_cap: &mut DeveloperCap, 
     proposal_id: ID,
     title: String,
@@ -91,13 +89,14 @@ module suibond::suibond {
 
   // STEP 2-2 : Propose Project
   // DEVELOPER
-  entry fun propose_and_stake(
+  entry public fun propose_and_stake(
     developer_cap: &mut DeveloperCap,
     platform: &mut SuibondPlatform,
     foundation_id: ID,
     bounty_id: ID,
     proposal_id: ID,
     stake: &mut Coin<SUI>,
+    // stake: Coin<SUI>,
     ctx: &mut TxContext
     ) {
       developer_cap.propose_and_stake(platform, foundation_id, bounty_id, proposal_id, stake, ctx);
@@ -107,7 +106,7 @@ module suibond::suibond {
   // -----------------------------------------
   // STEP 3 : Confirm Proposal
   //FOUNDATION
-  entry fun confirm_proposal(
+  entry public fun confirm_proposal(
     foundation_cap: &FoundationCap,
     platform: &mut SuibondPlatform,
     foundation_id: ID,
@@ -118,7 +117,7 @@ module suibond::suibond {
   }
 
   //FOUNDATION
-  entry fun reject_proposal(
+  entry public fun reject_proposal(
     foundation_cap: &FoundationCap,
     platform: &mut SuibondPlatform,
     foundation_id: ID,
@@ -134,7 +133,7 @@ module suibond::suibond {
   // -----------------------------------------
   // STEP 4-1 : Process Milestone or Get Back Stake Amount For Unconfirmed Proposal
   // DEVELOPER
-  entry fun unstake_rejected_or_expired_proposal(
+  entry public fun unstake_rejected_or_expired_proposal(
     developer_cap: &mut DeveloperCap,
     platform: &mut SuibondPlatform,
     foundation_id: ID,
@@ -146,7 +145,7 @@ module suibond::suibond {
   }
 
   // DEVELOPER
-  entry fun submit_milestone(
+  entry public fun submit_milestone(
     developer_cap: &mut DeveloperCap,
     platform: &mut SuibondPlatform,
     foundation_id: ID,
@@ -158,7 +157,7 @@ module suibond::suibond {
   }
 
   // DEVELOPER
-  entry fun request_extend_deadline_of_milestone(
+  entry public fun request_extend_deadline_of_milestone(
     developer_cap: &mut DeveloperCap,
     platform: &mut SuibondPlatform,
     foundation_id: ID,
@@ -170,7 +169,7 @@ module suibond::suibond {
 
   // STEP 4-2 : Confirm Milestone And Get Grant For The Milestone
   //FOUNDATION
-  entry fun confirm_milestone(ctx: &mut TxContext) {
+  entry public fun confirm_milestone(ctx: &mut TxContext) {
 
     // if the milestone deadline is missed, developer will get slashing
 
@@ -178,7 +177,7 @@ module suibond::suibond {
   }
 
   //FOUNDATION
-  entry fun reject_milestone(ctx: &mut TxContext) {
+  entry public fun reject_milestone(ctx: &mut TxContext) {
 
   }
 

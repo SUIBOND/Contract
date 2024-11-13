@@ -69,9 +69,9 @@ module suibond::foundation {
       foundation.add_bounty(bounty);
   }
 
-  public fun get_stake_amount(foundation: &mut Foundation, bounty_id: ID, proposal_id: ID): u64 {
+  public fun risk_percent(foundation: &mut Foundation, bounty_id: ID): u64 {
     let bounty = foundation.borrow_bounty_mut(bounty_id);
-    bounty.get_stake_amount(proposal_id)
+    bounty.risk_percent()
   }
   public fun add_proposal(foundation: &mut Foundation, bounty_id: ID, proposal: Proposal) {
     let bounty = foundation.borrow_bounty_mut(bounty_id);

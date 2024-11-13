@@ -1,6 +1,7 @@
 
 module suibond::developer_cap {
   use std::string::{String};
+  use std::u64::{Self};
   use sui::dynamic_object_field::{Self};
   use sui::coin::{Coin};
   use sui::sui::{SUI};
@@ -82,8 +83,10 @@ module suibond::developer_cap {
     ctx: &mut TxContext
   ) {
     let mut proposal = developer_cap.remove_unsubmitted_proposal();
-    let stake_amount_mist = platform.get_stake_amount(foundation_id, bounty_id, proposal_id);
+    let risk_percent = platform.risk_percent(foundation_id, bounty_id);
+    let stake_amount_mist = u64::divide_and_round_up(proposal.grant_size() * risk_percent, 100);
     let stake = stake.split(stake_amount_mist, ctx);
+
     proposal.stake(stake);
     developer_cap.submit_proposal(platform, foundation_id, bounty_id, proposal, ctx);
   }
@@ -144,7 +147,7 @@ module suibond::developer_cap {
 
   // ================= FUNCTIONS =================
 
-  fun new(name: String, url: String, ctx: &mut TxContext): DeveloperCap {
+  public fun new(name: String, url: String, ctx: &mut TxContext): DeveloperCap {
     DeveloperCap{
       id: object::new(ctx),
       owner: ctx.sender(),
@@ -161,5 +164,22 @@ module suibond::developer_cap {
   public fun mint(name: String, url: String, ctx: &mut TxContext) {
     let dev_cap = new(name, url, ctx);
     transfer::public_transfer(dev_cap, ctx.sender())
+  }
+
+  // ================= TEST FUNCTIONS =================
+  
+  #[test_only]
+  public fun delete(developer_cap: DeveloperCap) {
+    let DeveloperCap {
+      id:id,
+      owner:_,
+      name:_,
+      url:_,
+      unsubmitted_proposal:_,
+      submitted_proposal: _,
+      rejected_or_expired_proposal: _,
+      completed_proposal: _
+    } = developer_cap;
+    object::delete(id);
   }
 }

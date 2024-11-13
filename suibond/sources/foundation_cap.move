@@ -58,7 +58,7 @@ module suibond::foundation_cap {
 
   // ================= FUNCTIONS =================
 
-  fun new(name: String, ctx: &mut TxContext): FoundationCap {
+  public fun new(name: String, ctx: &mut TxContext): FoundationCap {
     FoundationCap{
       id: object::new(ctx),
       owner: ctx.sender(),
@@ -73,5 +73,17 @@ module suibond::foundation_cap {
     transfer::public_transfer(platform, ctx.sender())
   }
 
+  // ================= TEST FUNCTIONS =================
+  
+  #[test_only]
+  public fun delete(foundation_cap: FoundationCap) {
+    let FoundationCap {
+      id: id,
+      owner: _,
+      name: _,
+      foundation_ids: _,
+    } = foundation_cap;
+    object::delete(id);
+  }
 
 }

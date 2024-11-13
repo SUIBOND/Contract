@@ -38,11 +38,9 @@ module suibond::bounty {
   public fun name(bounty: &Bounty): String {
     bounty.name
   }
-
-  public fun get_stake_amount(bounty: &mut Bounty, proposal_id: ID): u64{
-    let proposal = bounty.proposals.unconfirmed_proposals.borrow(proposal_id);
-    let stake_amount = u64::divide_and_round_up(proposal.grant_size() * bounty.risk_percent, 100);
-    stake_amount
+  
+  public fun risk_percent(bounty: &Bounty): u64 {
+    bounty.risk_percent
   }
 
   public fun borrow_unconfirmed_proposal_mut(bounty: &mut Bounty, proposal_id: ID): &mut Proposal{

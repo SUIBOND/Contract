@@ -29,6 +29,6 @@ flavor = "sui"
 
 [env.suiscan]
 chain-id = "4c78adac"
-original-published-id = "0x26613c1dda4b4e9ed7abb03f1b5a7b360fdfae94bc936f77039c94663970b933"
-latest-published-id = "0x26613c1dda4b4e9ed7abb03f1b5a7b360fdfae94bc936f77039c94663970b933"
+original-published-id = "0x3dd09ff33efed6f87fa9355f5d0c2e192af204195f2b33e5b669605d270e5255"
+latest-published-id = "0x3dd09ff33efed6f87fa9355f5d0c2e192af204195f2b33e5b669605d270e5255"
 published-version = "1"
