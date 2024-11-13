@@ -15,8 +15,15 @@ module suibond::proposal {
     title: String,
     project: Project,
 
-    stake: Coin<SUI> // stake when create proposal with project
+    stake: Coin<SUI>, // stake when create proposal with project
+    state: u64
   }
+
+  const UNSUBMITTED: u64 = 0;
+  const SUBMITTED: u64 = 1;
+  const REJECTED: u64 = 2;
+  const PROCESSING: u64 = 3;
+  const COMPLETED: u64 = 4;
 
   // ================= METHODS =================
 
@@ -38,20 +45,20 @@ module suibond::proposal {
   }
 
   public fun stake(proposal: &mut Proposal, stake: Coin<SUI>) {
-    proposal.project.add_stake_amount(&stake);
+    // proposal.project.add_stake_amount(&stake);
     proposal.stake.join(stake);
   }
-  
-  public fun set_project_state_submitted( proposal: &mut Proposal) {
-      proposal.project.set_state_submitted();
+
+  public fun set_state_submitted( proposal: &mut Proposal) {
+      proposal.state = SUBMITTED;
   }
 
-  public fun set_project_state_rejected( proposal: &mut Proposal) {
-      proposal.project.set_state_rejected();
+  public fun set_state_rejected( proposal: &mut Proposal) {
+      proposal.state = REJECTED;
   }
 
-  public fun set_project_state_processing( proposal: &mut Proposal) {
-      proposal.project.set_state_processing();
+  public fun set_state_processing( proposal: &mut Proposal) {
+      proposal.state = PROCESSING;
   }
   // ================= FUNCTIONS =================
 
@@ -85,6 +92,7 @@ module suibond::proposal {
         title: proposal_title,
         project: project,
         stake: coin::zero(ctx),
+        state: UNSUBMITTED
       }
 
   }

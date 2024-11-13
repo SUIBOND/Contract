@@ -55,7 +55,7 @@ module suibond::bounty {
     bounty: &mut Bounty, 
     proposal_id: ID){
       let mut proposal = bounty.remove_unconfirmed_proposal(proposal_id);
-      proposal.set_project_state_processing();
+      proposal.set_state_processing();
       bounty.add_processing_proposal(proposal);
   }
 
@@ -63,7 +63,7 @@ module suibond::bounty {
     bounty: &mut Bounty, 
     proposal_id: ID){
       let proposal = bounty.borrow_unconfirmed_proposal_mut(proposal_id);
-      proposal.set_project_state_rejected();
+      proposal.set_state_rejected();
   }
 
   // ================= FUNCTIONS =================

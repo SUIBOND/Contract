@@ -71,7 +71,7 @@ module suibond::developer_cap {
   ) {
     let mut proposal = developer_cap.remove_unsubmitted_proposal();
     proposal.stake(stake);
-    proposal.set_project_state_submitted();
+    proposal.set_state_submitted();
     developer_cap.submit_proposal(platform, foundation_id, bounty_id, proposal);
   }
 
