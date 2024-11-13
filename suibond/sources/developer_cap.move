@@ -195,7 +195,7 @@ module suibond::developer_cap {
     proposal_id: ID,
     milestone_submission_id: ID,
     ctx: &mut TxContext) {
-      let proposal = platform.borrow_processing_proposal(foundation_id, bounty_id, proposal_id);
+      let proposal = platform.borrow_processing_proposal_mut(foundation_id, bounty_id, proposal_id);
       developer_cap.check_if_developer_is_proposer(proposal, ctx);
       proposal.submit_milestone(milestone_submission_id, ctx);
   }
@@ -207,7 +207,7 @@ module suibond::developer_cap {
     bounty_id: ID,
     proposal_id: ID,
     ctx: &mut TxContext) {
-      let proposal = platform.borrow_processing_proposal(foundation_id, bounty_id, proposal_id);
+      let proposal = platform.borrow_processing_proposal_mut(foundation_id, bounty_id, proposal_id);
       developer_cap.check_if_developer_is_proposer(proposal, ctx);
       proposal.request_extend_deadline_of_milestone(ctx);
   }
