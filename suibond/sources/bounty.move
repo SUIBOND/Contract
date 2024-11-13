@@ -4,6 +4,7 @@ module suibond::bounty {
   use sui::sui::{ SUI };
   use sui::object_table::{Self, ObjectTable};
   use suibond::proposal::{Proposal};
+  use std::u64::{Self};
 
   public struct Bounty has key, store {
     id: UID,
@@ -36,6 +37,12 @@ module suibond::bounty {
 
   public fun name(bounty: &Bounty): String {
     bounty.name
+  }
+
+  public fun get_stake_amount(bounty: &mut Bounty, proposal_id: ID): u64{
+    let proposal = bounty.proposals.unconfirmed_proposals.borrow(proposal_id);
+    let stake_amount = u64::divide_and_round_up(proposal.grant_size() * bounty.risk_percent, 100);
+    stake_amount
   }
 
   public fun borrow_unconfirmed_proposal_mut(bounty: &mut Bounty, proposal_id: ID): &mut Proposal{

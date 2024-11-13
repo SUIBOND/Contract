@@ -19,6 +19,10 @@ module suibond::milestone {
 
   // ================= METHODS =================
 
+  public fun duration_epochs(milestone: &Milestone): u64 {
+    milestone.duration_epochs
+  }
+
 
   // ================= FUNCTIONS =================
 

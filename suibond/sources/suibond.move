@@ -102,10 +102,11 @@ module suibond::suibond {
     platform: &mut SuibondPlatform,
     foundation_id: ID,
     bounty_id: ID,
-    stake: Coin<SUI>,
+    proposal_id: ID,
+    stake: &mut Coin<SUI>,
     ctx: &mut TxContext
     ) {
-      developer_cap.propose_and_stake(platform, foundation_id, bounty_id, stake, ctx);
+      developer_cap.propose_and_stake(platform, foundation_id, bounty_id, proposal_id, stake, ctx);
   }
 
 

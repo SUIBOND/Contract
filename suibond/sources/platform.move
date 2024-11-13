@@ -55,10 +55,16 @@ module suibond::platform {
       platform.add_bounty(foundation_id, bounty);
   }
 
+  public fun get_stake_amount(platform: &mut SuibondPlatform, foundation_id: ID, bounty_id: ID, proposal_id: ID): u64{
+    let foundation = platform.borrow_foundation_mut(foundation_id);
+    foundation.get_stake_amount(bounty_id, proposal_id)
+  }
+
   public fun add_proposal(platform: &mut SuibondPlatform, foundation_id: ID, bounty_id: ID, proposal: Proposal){
     let foundation = platform.borrow_foundation_mut(foundation_id);
     foundation.add_proposal(bounty_id, proposal);
   }
+
 
   public fun confrim_proposal(
     platform: &mut SuibondPlatform, 

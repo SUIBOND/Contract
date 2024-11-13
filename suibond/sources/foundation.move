@@ -60,6 +60,10 @@ module suibond::foundation {
       foundation.add_bounty(bounty);
   }
 
+  public fun get_stake_amount(foundation: &mut Foundation, bounty_id: ID, proposal_id: ID): u64 {
+    let bounty = foundation.borrow_bounty_mut(bounty_id);
+    bounty.get_stake_amount(proposal_id)
+  }
   public fun add_proposal(foundation: &mut Foundation, bounty_id: ID, proposal: Proposal) {
     let bounty = foundation.borrow_bounty_mut(bounty_id);
     bounty.check_if_proposal_grant_size_within_bounty_range(&proposal);

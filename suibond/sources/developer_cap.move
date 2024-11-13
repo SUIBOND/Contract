@@ -69,10 +69,13 @@ module suibond::developer_cap {
     platform: &mut SuibondPlatform,
     foundation_id: ID,
     bounty_id: ID,
-    stake: Coin<SUI>,
+    proposal_id: ID,
+    stake: &mut Coin<SUI>,
     ctx: &mut TxContext
   ) {
     let mut proposal = developer_cap.remove_unsubmitted_proposal();
+    let stake_amount_mist = platform.get_stake_amount(foundation_id, bounty_id, proposal_id);
+    let stake = stake.split(stake_amount_mist, ctx);
     proposal.stake(stake);
     developer_cap.submit_proposal(platform, foundation_id, bounty_id, proposal, ctx);
   }
