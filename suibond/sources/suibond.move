@@ -46,7 +46,6 @@ module suibond::suibond {
   //FOUNDATION
   entry fun create_and_add_bounty_to_foundation(
     platform: &mut SuibondPlatform, 
-    // foundation: &Foundation, 
     foundation_id: ID, 
     name: String,
     bounty_type: u64,
@@ -63,12 +62,9 @@ module suibond::suibond {
   // DEVELOPER
   entry fun create_proposal(
     developer_cap: &mut DeveloperCap, 
-    // foundation: &Foundation, 
     foundation_id: ID, 
-    // bounty: &Bounty, 
     bounty_id: ID, 
     proposal_title: String, 
-
     project_title: String,
     project_description: String,
     grant_size: u64,
