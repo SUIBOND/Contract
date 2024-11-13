@@ -5,7 +5,7 @@ module suibond::developer_cap {
   use sui::dynamic_object_field::{Self};
   use sui::coin::{Coin};
   use sui::sui::{SUI};
-  use suibond::proposal::{Proposal};
+  use suibond::proposal::{Self, Proposal};
   use suibond::platform::{SuibondPlatform};
 
   public struct DeveloperCap has key, store {
@@ -19,58 +19,62 @@ module suibond::developer_cap {
     completed_proposal: vector<ID>,
   }
 
-  // ================= METHODS =================
-
-  public fun id(developer_cap: &DeveloperCap): ID {
-    object::id(developer_cap)
+  // ====================================================
+  // ================= Create Functions =================
+  public fun new(name: String, url: String, ctx: &mut TxContext): DeveloperCap {
+    DeveloperCap{
+      id: object::new(ctx),
+      owner: ctx.sender(),
+      name: name,
+      url: url,
+      unsubmitted_proposal: vector<ID>[],
+      submitted_proposal: vector<ID>[],
+      rejected_or_expired_proposal: vector<ID>[],
+      completed_proposal: vector<ID>[],
+    }
   }
 
-  public fun borrow_proposal_mut(developer_cap: &mut DeveloperCap, proposal_id: ID): &mut Proposal {
-    dynamic_object_field::borrow_mut(&mut developer_cap.id, proposal_id)
+  // ===========================================================
+  // ================= Entry Related Functions =================
+  #[allow(lint(self_transfer))]
+  public fun mint(name: String, url: String, ctx: &mut TxContext) {
+    let dev_cap = new(name, url, ctx);
+    transfer::public_transfer(dev_cap, ctx.sender())
   }
 
-  public fun check_if_developer_is_proposer(developer_cap: &mut DeveloperCap, proposal: &Proposal, ctx: &mut TxContext) {
-    assert!(developer_cap.owner == ctx.sender(), 100);
-    assert!(developer_cap.owner == proposal.proposer(), 100);
+  public fun update_developer_info(
+    developer_cap: &mut DeveloperCap,
+    name: String,
+    url: String,
+    ctx: &mut TxContext) {
+      assert!(developer_cap.owner == ctx.sender(), 100);
+      developer_cap.name = name;
+      developer_cap.url = url;
   }
 
+  public fun create_proposal(
+    developer_cap: &mut DeveloperCap,
+    foundation_id: ID, 
+    bounty_id: ID, 
+    proposal_title: String, 
+    project_title: String,
+    project_description: String,
+    grant_size: u64,
+    ctx: &mut TxContext) {
+      assert!(developer_cap.unsubmitted_proposal.length() <= 1, 100); // for version 1 (easy version)
+      let proposal = proposal::new( developer_cap.id(), foundation_id, bounty_id, proposal_title, project_title, project_description, grant_size, ctx);
+      developer_cap.add_unsubmitted_proposal(proposal);
+  }
 
   public fun create_and_add_milestone(
     developer_cap: &mut DeveloperCap, 
     proposal_id: ID,
-    // milestone_number: u64,
     title: String,
     description: String,
     duration_epochs: u64,
     ctx: &mut TxContext) {
-    let proposal = developer_cap.borrow_proposal_mut(proposal_id);
-    proposal.create_and_add_milestone(title, description, duration_epochs, ctx);
-  }
-
-  public fun add_unsubmitted_proposal(developer_cap: &mut DeveloperCap, proposal: Proposal) {
-    assert!(developer_cap.unsubmitted_proposal.length() <= 1, 100); // for version 1 (easy version)
-
-    developer_cap.unsubmitted_proposal.push_back(proposal.id());
-    dynamic_object_field::add(&mut developer_cap.id, proposal.id(), proposal);
-  }
-
-  public fun remove_unsubmitted_proposal(developer_cap: &mut DeveloperCap): Proposal {
-    // easy version 
-    let proposal_id = developer_cap.unsubmitted_proposal.pop_back();
-    dynamic_object_field::remove(&mut developer_cap.id, proposal_id)
-  }
-
-  public fun add_rejected_or_expired_proposal(developer_cap: &mut DeveloperCap, proposal: Proposal) {
-    developer_cap.rejected_or_expired_proposal.push_back(proposal.id());
-    dynamic_object_field::add(&mut developer_cap.id, proposal.id(), proposal);
-  }
-
-  public fun submit_proposal(developer_cap: &mut DeveloperCap, platform: &mut SuibondPlatform, foundation_id: ID, bounty_id: ID, proposal: Proposal, ctx: &mut TxContext) {
-    developer_cap.submitted_proposal.push_back(proposal.id());
-    let mut proposal = proposal;
-    proposal.set_state_submitted();
-    proposal.set_submitted_epochs(ctx);
-    platform.add_proposal(foundation_id, bounty_id, proposal);
+      let proposal = developer_cap.borrow_proposal_mut(proposal_id);
+      proposal.create_and_add_milestone(title, description, duration_epochs, ctx);
   }
 
   public fun propose_and_stake(
@@ -82,13 +86,84 @@ module suibond::developer_cap {
     stake: &mut Coin<SUI>,
     ctx: &mut TxContext
   ) {
-    let mut proposal = developer_cap.remove_unsubmitted_proposal();
+    let mut proposal = developer_cap.remove_unsubmitted_proposal(proposal_id);
+
     let risk_percent = platform.risk_percent(foundation_id, bounty_id);
     let stake_amount_mist = u64::divide_and_round_up(proposal.grant_size() * risk_percent, 100);
     let stake = stake.split(stake_amount_mist, ctx);
-
     proposal.stake(stake);
+
     developer_cap.submit_proposal(platform, foundation_id, bounty_id, proposal, ctx);
+  }
+
+  public fun unstake_rejected_or_expired_proposal(
+    developer_cap: &mut DeveloperCap,
+    platform: &mut SuibondPlatform,
+    foundation_id: ID,
+    bounty_id: ID,
+    proposal_id: ID,
+    ctx: &mut TxContext) {
+      developer_cap.bring_back_rejected_or_expired_proposal(platform, foundation_id, bounty_id, proposal_id, ctx);
+      developer_cap.unstake_from_proposal(proposal_id, ctx);
+    }
+
+  // ===========================================
+  // ================= Methods =================
+
+  // Read
+  // ============
+  public fun id(developer_cap: &DeveloperCap): ID {
+    object::id(developer_cap)
+  }
+
+  // Borrow
+  // ============
+  public fun borrow_proposal_mut(developer_cap: &mut DeveloperCap, proposal_id: ID): &mut Proposal {
+    dynamic_object_field::borrow_mut(&mut developer_cap.id, proposal_id)
+  }
+
+  // Check
+  // ============
+  public fun check_if_developer_is_proposer(developer_cap: &mut DeveloperCap, proposal: &Proposal, ctx: &mut TxContext) {
+    assert!(developer_cap.owner == ctx.sender(), 100);
+    assert!(developer_cap.owner == proposal.proposer(), 100);
+  }
+
+  // =============================================================
+  // ================= Public-Mutative Functions =================
+
+  // Proposal
+  // ============
+  public fun add_unsubmitted_proposal(developer_cap: &mut DeveloperCap, proposal: Proposal) {
+    developer_cap.unsubmitted_proposal.push_back(proposal.id());
+    dynamic_object_field::add(&mut developer_cap.id, proposal.id(), proposal);
+  }
+
+  public fun remove_unsubmitted_proposal(developer_cap: &mut DeveloperCap, proposal_id: ID): Proposal {
+    let (is_contain, index) = developer_cap.unsubmitted_proposal.index_of(&proposal_id);
+    if (is_contain) {
+      developer_cap.unsubmitted_proposal.remove(index);
+    };
+    dynamic_object_field::remove(&mut developer_cap.id, proposal_id)
+  }
+
+  public fun add_rejected_or_expired_proposal(developer_cap: &mut DeveloperCap, proposal: Proposal) {
+    developer_cap.rejected_or_expired_proposal.push_back(proposal.id());
+    dynamic_object_field::add(&mut developer_cap.id, proposal.id(), proposal);
+  }
+
+  public fun submit_proposal(
+    developer_cap: &mut DeveloperCap, 
+    platform: &mut SuibondPlatform, 
+    foundation_id: ID, 
+    bounty_id: ID, 
+    proposal: Proposal, 
+    ctx: &mut TxContext) {
+      developer_cap.submitted_proposal.push_back(proposal.id());
+      let mut proposal = proposal;
+      proposal.set_state_submitted();
+      proposal.set_submitted_epochs(ctx);
+      platform.add_proposal(foundation_id, bounty_id, proposal);
   }
 
   public fun bring_back_rejected_or_expired_proposal(
@@ -110,6 +185,8 @@ module suibond::developer_cap {
       proposal.unstake(ctx);
   }
 
+  // Milestone
+  // ============
   public fun submit_milestone(
     developer_cap: &mut DeveloperCap,
     platform: &mut SuibondPlatform,
@@ -135,39 +212,9 @@ module suibond::developer_cap {
       proposal.request_extend_deadline_of_milestone(ctx);
   }
 
-  public fun update_developer_info(
-    developer_cap: &mut DeveloperCap,
-    name: String,
-    url: String,
-    ctx: &mut TxContext) {
-      assert!(developer_cap.owner == ctx.sender(), 100);
-      developer_cap.name = name;
-      developer_cap.url = url;
-  }
-
-  // ================= FUNCTIONS =================
-
-  public fun new(name: String, url: String, ctx: &mut TxContext): DeveloperCap {
-    DeveloperCap{
-      id: object::new(ctx),
-      owner: ctx.sender(),
-      name: name,
-      url: url,
-      unsubmitted_proposal: vector<ID>[],
-      submitted_proposal: vector<ID>[],
-      rejected_or_expired_proposal: vector<ID>[],
-      completed_proposal: vector<ID>[],
-    }
-  }
-
-  #[allow(lint(self_transfer))]
-  public fun mint(name: String, url: String, ctx: &mut TxContext) {
-    let dev_cap = new(name, url, ctx);
-    transfer::public_transfer(dev_cap, ctx.sender())
-  }
-
+  // ==================================================
   // ================= TEST FUNCTIONS =================
-  
+
   #[test_only]
   public fun delete(developer_cap: DeveloperCap) {
     let DeveloperCap {

@@ -67,8 +67,7 @@ module suibond::suibond {
     project_description: String,
     grant_size: u64,
     ctx: &mut TxContext) {
-      let proposal = proposal::new( developer_cap.id(), foundation_id, bounty_id, proposal_title, project_title, project_description, grant_size, ctx);
-      developer_cap.add_unsubmitted_proposal(proposal);
+      developer_cap.create_proposal(foundation_id, bounty_id, proposal_title, project_title, project_description, grant_size, ctx);
   }
 
   // DEVELOPER
@@ -96,7 +95,6 @@ module suibond::suibond {
     bounty_id: ID,
     proposal_id: ID,
     stake: &mut Coin<SUI>,
-    // stake: Coin<SUI>,
     ctx: &mut TxContext
     ) {
       developer_cap.propose_and_stake(platform, foundation_id, bounty_id, proposal_id, stake, ctx);
@@ -140,8 +138,7 @@ module suibond::suibond {
     bounty_id: ID,
     proposal_id: ID,
     ctx: &mut TxContext) {
-      developer_cap.bring_back_rejected_or_expired_proposal(platform, foundation_id, bounty_id, proposal_id, ctx);
-      developer_cap.unstake_from_proposal(proposal_id, ctx);
+      developer_cap.unstake_rejected_or_expired_proposal(platform, foundation_id, bounty_id, proposal_id, ctx);
   }
 
   // DEVELOPER
