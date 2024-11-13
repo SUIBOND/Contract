@@ -16,6 +16,7 @@ module suibond::proposal {
     title: String,
     project: Project,
     
+    state: u64,
     submitted_epochs: u64,
     confirmed_epochs: u64,
     completed_epochs: u64,
@@ -23,7 +24,6 @@ module suibond::proposal {
 
     grant_size: u64,
     stake: Coin<SUI>, // stake when create proposal with project
-    state: u64
   }
 
   const CONFIRMING_DURATION: u64 = 10;
@@ -65,6 +65,7 @@ module suibond::proposal {
 
   public fun set_submitted_epochs(proposal: &mut Proposal, ctx: &mut TxContext) {
     proposal.submitted_epochs = ctx.epoch();
+    proposal.current_deadline_epochs = proposal.submitted_epochs + CONFIRMING_DURATION;
   }
   
   public fun set_state_submitted(proposal: &mut Proposal) {
@@ -110,13 +111,13 @@ module suibond::proposal {
         bounty: bounty_id,
         title: proposal_title,
         project: project,
+        state: UNSUBMITTED,
         submitted_epochs: 0,
         confirmed_epochs: 0,
         completed_epochs: 0,
         current_deadline_epochs: 0,
         grant_size: grant_size,
         stake: coin::zero(ctx),
-        state: UNSUBMITTED
       }
 
   }
