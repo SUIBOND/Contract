@@ -67,6 +67,11 @@ module suibond::proposal {
     proposal.submitted_epochs = ctx.epoch();
     proposal.current_deadline_epochs = proposal.submitted_epochs + CONFIRMING_DURATION;
   }
+
+  public fun set_confirmed_epochs(proposal: &mut Proposal, ctx: &mut TxContext) {
+    proposal.confirmed_epochs = ctx.epoch();
+    proposal.current_deadline_epochs = proposal.confirmed_epochs + proposal.project.duration_epochs();
+  }
   
   public fun set_state_submitted(proposal: &mut Proposal) {
       proposal.state = SUBMITTED;

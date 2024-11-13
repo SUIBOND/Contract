@@ -19,9 +19,12 @@ module suibond::project {
 
 
   // ================= METHODS =================
+  public fun duration_epochs(project: &Project): u64 {
+    project.duration_epochs
+  }
   
 
-  public fun add_milestone( project: &mut Project, milestone: Milestone) {
+  public fun add_milestone(project: &mut Project, milestone: Milestone) {
       project.duration_epochs = project.duration_epochs + milestone.duration_epochs();
       project.milestones.push_back(milestone);
   }
