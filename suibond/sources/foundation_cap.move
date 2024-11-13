@@ -11,25 +11,28 @@ module suibond::foundation_cap {
     foundation_ids: vector<ID>,
   }
 
-  // ================= METHODS =================
-
-  public fun id(foundation_cap: &FoundationCap): ID {
-    object::id(foundation_cap)
+  // ====================================================
+  // ================= Create Functions =================
+  public fun new(name: String, ctx: &mut TxContext): FoundationCap {
+    FoundationCap{
+      id: object::new(ctx),
+      owner: ctx.sender(),
+      name: name,
+      foundation_ids: vector<ID>[],
+    }
   }
 
-  public fun owner(foundation_cap: &FoundationCap): address {
-    foundation_cap.owner
+  // ===========================================================
+  // ================= Entry Related Functions =================
+  #[allow(lint(self_transfer))]
+  public fun mint(name: String, ctx: &mut TxContext) {
+    let platform = new(name, ctx);
+    transfer::public_transfer(platform, ctx.sender())
   }
 
-  public fun add_foundation(foundation_cap: &mut FoundationCap, foundation: &Foundation) {
-    assert!(foundation_cap.foundation_ids.length() <= 1, 100); // for easy version. it can store only one foundation
-
+  public fun register_foundation(foundation_cap: &mut FoundationCap, platform: &mut SuibondPlatform, foundation: Foundation) {
     foundation_cap.foundation_ids.push_back(foundation.id());
-  }
-
-  public fun check_owner(foundation_cap: &FoundationCap, ctx: &mut TxContext){
-    assert!(foundation_cap.owner() == ctx.sender(), 100)
-
+    platform.register_foundation(foundation);
   }
 
   public fun confrim_proposal(
@@ -40,7 +43,6 @@ module suibond::foundation_cap {
     proposal_id: ID,
     ctx: &mut TxContext) {
       foundation_cap.check_owner(ctx);
-
       platform.confrim_proposal(foundation_id, bounty_id, proposal_id, ctx);
   }
 
@@ -52,27 +54,35 @@ module suibond::foundation_cap {
     proposal_id: ID,
     ctx: &mut TxContext) {
       foundation_cap.check_owner(ctx);
-
       platform.reject_proposal(foundation_id, bounty_id, proposal_id);
   }
+  // ===========================================
+  // ================= Methods =================
 
-  // ================= FUNCTIONS =================
-
-  public fun new(name: String, ctx: &mut TxContext): FoundationCap {
-    FoundationCap{
-      id: object::new(ctx),
-      owner: ctx.sender(),
-      name: name,
-      foundation_ids: vector<ID>[],
-    }
+  // Read
+  // ============
+  public fun id(foundation_cap: &FoundationCap): ID {
+    object::id(foundation_cap)
   }
 
-  #[allow(lint(self_transfer))]
-  public fun mint(name: String, ctx: &mut TxContext) {
-    let platform = new(name, ctx);
-    transfer::public_transfer(platform, ctx.sender())
+  public fun owner(foundation_cap: &FoundationCap): address {
+    foundation_cap.owner
   }
 
+  // Borrow
+  // ============
+
+  // Check
+  // ============
+  public fun check_owner(foundation_cap: &FoundationCap, ctx: &mut TxContext){
+    assert!(foundation_cap.owner() == ctx.sender(), 100)
+  }
+
+  // =============================================================
+  // ================= Public-Mutative Functions =================
+
+
+  // ==================================================
   // ================= TEST FUNCTIONS =================
   
   #[test_only]

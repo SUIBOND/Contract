@@ -37,8 +37,7 @@ module suibond::suibond {
   //FOUNDATION
   entry public fun create_and_register_foundation(foundation_cap: &mut FoundationCap, name: String, platform: &mut SuibondPlatform, ctx: &mut TxContext) {
     let foundation = foundation::new(foundation_cap.id(), name, ctx);
-    foundation_cap.add_foundation(&foundation);
-    platform.register_foundation(foundation);
+    foundation_cap.register_foundation(platform, foundation);
   }
 
   //FOUNDATION

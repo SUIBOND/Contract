@@ -39,8 +39,7 @@ module suibond::suibond_tests {
       // suibond::create_and_register_foundation(&mut foundation_cap, string::utf8(b"foundation1"), &mut platform, ctx);
       let foundation = foundation::new(foundation_cap.id(), string::utf8(b"foundation_name"), ctx);
       let foundation_id = foundation.id();
-      foundation_cap.add_foundation(&foundation);
-      platform.register_foundation(foundation);
+      foundation_cap.register_foundation(&mut platform, foundation);
 
       // entry public fun create_and_add_bounty_to_foundation(
       let bounty = bounty::new( foundation_id, string::utf8(b"bounty_name"), 1, 1, 0, 1000000, coin, ctx);
