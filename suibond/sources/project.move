@@ -22,7 +22,8 @@ module suibond::project {
   
 
   public fun add_milestone( project: &mut Project, milestone: Milestone) {
-      project.milestones.push_back(milestone)
+      project.duration_epochs = project.duration_epochs + milestone.duration_epochs();
+      project.milestones.push_back(milestone);
   }
 
   public fun create_and_add_milestone(
