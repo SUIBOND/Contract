@@ -33,13 +33,13 @@ module suibond::developer_cap {
   public fun create_and_add_milestone(
     developer_cap: &mut DeveloperCap, 
     proposal_id: ID,
-    milestone_number: u64,
+    // milestone_number: u64,
     title: String,
     description: String,
     duration_epochs: u64,
     ctx: &mut TxContext) {
     let proposal = developer_cap.borrow_proposal_mut(proposal_id);
-    proposal.create_and_add_milestone(milestone_number, title, description, duration_epochs, ctx);
+    proposal.create_and_add_milestone(title, description, duration_epochs, ctx);
   }
 
   public fun add_unsubmitted_proposal(developer_cap: &mut DeveloperCap, proposal: Proposal) {

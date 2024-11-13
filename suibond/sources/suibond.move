@@ -84,12 +84,11 @@ module suibond::suibond {
   entry fun add_milestone_to_project(
     developer_cap: &mut DeveloperCap, 
     proposal_id: ID,
-    milestone_number: u64,
     title: String,
     description: String,
     duration_epochs: u64,
     ctx: &mut TxContext) {
-      developer_cap.create_and_add_milestone(proposal_id, milestone_number, title, description, duration_epochs, ctx);
+      developer_cap.create_and_add_milestone(proposal_id, title, description, duration_epochs, ctx);
   }
 
   // // DEVELOPER

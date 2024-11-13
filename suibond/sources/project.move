@@ -37,11 +37,11 @@ module suibond::project {
 
   public fun create_and_add_milestone(
     project: &mut Project,
-    milestone_number: u64,
     title: String,
     description: String,
     duration_epochs: u64,
     ctx: &mut TxContext) {
+      let milestone_number = project.milestones.length();
       let milestone = milestone::new(
         milestone_number,
         title,

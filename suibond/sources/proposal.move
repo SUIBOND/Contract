@@ -26,13 +26,11 @@ module suibond::proposal {
 
   public fun create_and_add_milestone(
     proposal: &mut Proposal,
-    milestone_number: u64,
     title: String,
     description: String,
     duration_epochs: u64,
     ctx: &mut TxContext) {
       proposal.project.create_and_add_milestone(
-        milestone_number, 
         title, 
         description, 
         duration_epochs, 
