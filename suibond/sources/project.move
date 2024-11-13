@@ -83,7 +83,7 @@ module suibond::project {
         duration_epochs: duration_epochs,
         milestones: vector<Milestone>[],
         current_processing_milestone_number: 0,
-        state: 0
+        state: UNSUBMITTED
       }
   }
 

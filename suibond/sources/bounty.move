@@ -21,14 +21,9 @@ module suibond::bounty {
   }
 
   public struct ProposalsOfBounty has store {
-    unconfirmed_proposal: ObjectTable<ID, Proposal>, // developer can get back Proposal with stake when the Proposal has expired
-    unconfirmed_proposal_ids: vector<ID>,
-
-    processing_proposal: ObjectTable<ID, Proposal>, 
-    processing_proposal_ids: vector<ID>,
-
-    completed_proposal: ObjectTable<ID, Proposal>, 
-    completed_proposal_ids: vector<ID>,
+    unconfirmed_proposals: ObjectTable<ID, Proposal>, // developer can get back Proposal with stake when the Proposal has expired
+    processing_proposals: ObjectTable<ID, Proposal>, 
+    completed_proposals: ObjectTable<ID, Proposal>, 
   }
   // ================= METHODS =================
 
@@ -41,15 +36,23 @@ module suibond::bounty {
   }
 
   public fun add_unconfirmed_proposal(bounty: &mut Bounty, proposal: Proposal){
-    bounty.proposals.unconfirmed_proposal_ids.push_back(proposal.id());
-    bounty.proposals.unconfirmed_proposal.add(proposal.id(), proposal);
+    bounty.proposals.unconfirmed_proposals.add(proposal.id(), proposal);
+  }
+
+  public fun remove_unconfirmed_proposal(bounty: &mut Bounty, proposal_id: ID): Proposal{
+    bounty.proposals.unconfirmed_proposals.remove(proposal_id)
+  }
+
+  public fun add_processing_proposal(bounty: &mut Bounty, proposal: Proposal){
+    bounty.proposals.processing_proposals.add(proposal.id(), proposal);
   }
 
   public fun confirm_unconfirmed_proposal(
     bounty: &mut Bounty, 
     proposal_id: ID){
-      let proposal = bounty.proposals.unconfirmed_proposal.borrow_mut(proposal_id);
+      let mut proposal = bounty.remove_unconfirmed_proposal(proposal_id);
       proposal.set_project_state_processing();
+      bounty.add_processing_proposal(proposal);
   }
 
   // ================= FUNCTIONS =================
@@ -74,14 +77,9 @@ module suibond::bounty {
       max_amount: max_amount,
       fund: coin,
       proposals: ProposalsOfBounty{
-        unconfirmed_proposal: object_table::new<ID, Proposal>(ctx),
-        unconfirmed_proposal_ids: vector<ID>[],
-
-        processing_proposal: object_table::new<ID, Proposal>(ctx),
-        processing_proposal_ids: vector<ID>[],
-
-        completed_proposal: object_table::new<ID, Proposal>(ctx),
-        completed_proposal_ids: vector<ID>[],
+        unconfirmed_proposals: object_table::new<ID, Proposal>(ctx),
+        processing_proposals: object_table::new<ID, Proposal>(ctx),
+        completed_proposals: object_table::new<ID, Proposal>(ctx),
       }
     }
   }
