@@ -61,7 +61,9 @@ module suibond::bounty {
     bounty.proposals.processing_proposals.add(proposal.id(), proposal);
   }
 
-
+  public fun check_if_proposal_grant_size_within_bounty_range(bounty: &Bounty, proposal: &Proposal){
+    assert!(proposal.grant_size() >= bounty.min_amount && proposal.grant_size() <= bounty.max_amount,100);
+  }
 
   public fun confrim_proposal(bounty: &mut Bounty, proposal_id: ID, ctx: &mut TxContext){
       let mut proposal = bounty.remove_unconfirmed_proposal(proposal_id);
