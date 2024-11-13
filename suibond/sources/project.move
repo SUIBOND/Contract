@@ -1,8 +1,6 @@
 module suibond::project {
   use std::string::{String};
   use suibond::milestone::{Self, Milestone};
-  use sui::coin::{Self, Coin};
-  use sui::sui::{Self, SUI};
 
   public struct Project has key, store {
     id: UID,

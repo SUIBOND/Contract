@@ -1,16 +1,14 @@
 /// Module: suibond
 module suibond::suibond {
   use suibond::developer_cap::{Self, DeveloperCap};
-  use suibond::proposal::{Self, Proposal};
-  use suibond::project::{Self, Project};
+  use suibond::proposal::{Self};
   use suibond::foundation_cap::{Self, FoundationCap};
-  use suibond::foundation::{Self, Foundation};
-  use suibond::bounty::{Self, Bounty};
+  use suibond::foundation::{Self};
   use suibond::platform::{Self, SuibondPlatform};
 
   use std::string::{String};
-  use sui::coin::{Self, Coin};
-  use sui::sui::{Self, SUI};
+  use sui::coin::{Coin};
+  use sui::sui::{SUI};
 
 
   fun init(ctx: &mut TxContext) {
@@ -21,8 +19,8 @@ module suibond::suibond {
   // -----------------------------------------
   // STEP 0 : Identify
   // DEVELOPER
-  entry fun mint_developer_cap(name: String,  ctx: &mut TxContext) {
-    developer_cap::mint(name, ctx);
+  entry fun mint_developer_cap(name: String, url: String,  ctx: &mut TxContext) {
+    developer_cap::mint(name, url, ctx);
   }
 
   // DEVELOPER

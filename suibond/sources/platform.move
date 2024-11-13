@@ -1,10 +1,9 @@
 
 module suibond::platform {
-  use std::string::{Self, String};
-  use sui::coin::{Self, Coin};
-  use sui::sui::{Self, SUI};
+  use std::string::{String};
+  use sui::coin::{Coin};
+  use sui::sui::{SUI};
   use sui::object_table::{Self, ObjectTable};
-  use sui::dynamic_object_field::{Self};
   use suibond::proposal::{Proposal};
   use suibond::foundation::{Foundation};
   use suibond::bounty::{Self, Bounty};

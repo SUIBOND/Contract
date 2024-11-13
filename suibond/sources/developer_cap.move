@@ -6,14 +6,12 @@ module suibond::developer_cap {
   use sui::sui::{SUI};
   use suibond::proposal::{Proposal};
   use suibond::platform::{SuibondPlatform};
-  use suibond::foundation::{Foundation};
-  use suibond::bounty::{Bounty};
 
   public struct DeveloperCap has key, store {
     id: UID,
     owner: address,
     name: String,
-    // url: String,
+    url: String,
     unsubmitted_proposal: vector<ID>,
     submitted_proposal: vector<ID>,
     rejected_or_expired_proposal: vector<ID>,
@@ -136,11 +134,12 @@ module suibond::developer_cap {
 
   // ================= FUNCTIONS =================
 
-  fun new(name: String, ctx: &mut TxContext): DeveloperCap {
+  fun new(name: String, url: String, ctx: &mut TxContext): DeveloperCap {
     DeveloperCap{
       id: object::new(ctx),
       owner: ctx.sender(),
       name: name,
+      url: url,
       unsubmitted_proposal: vector<ID>[],
       submitted_proposal: vector<ID>[],
       rejected_or_expired_proposal: vector<ID>[],
@@ -149,8 +148,8 @@ module suibond::developer_cap {
   }
 
   #[allow(lint(self_transfer))]
-  public fun mint(name: String, ctx: &mut TxContext) {
-    let dev_cap = new(name, ctx);
+  public fun mint(name: String, url: String, ctx: &mut TxContext) {
+    let dev_cap = new(name, url, ctx);
     transfer::public_transfer(dev_cap, ctx.sender())
   }
 }

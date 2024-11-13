@@ -1,8 +1,7 @@
 
 module suibond::foundation_cap {
   use std::string::{String};
-  use sui::dynamic_object_field::{Self};
-  use suibond::foundation::{Self, Foundation};
+  use suibond::foundation::{Foundation};
   use suibond::platform::{SuibondPlatform};
 
   public struct FoundationCap has key, store {

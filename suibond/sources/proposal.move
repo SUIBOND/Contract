@@ -1,6 +1,5 @@
 module suibond::proposal {
   use std::string::{String};
-  use sui::transfer;
   use sui::coin::{Self, Coin};
   use sui::sui::{Self, SUI};
   use suibond::project::{Self, Project};
@@ -166,18 +165,6 @@ module suibond::proposal {
         grant_size: grant_size,
         stake: coin::zero(ctx),
       }
-
-  }
-
-  public fun create_project(ctx: &mut TxContext) {
-
-  }
-
-  public fun add_milestone(ctx: &mut TxContext) {
-
-  }
-
-  public fun add_project(ctx: &mut TxContext) {
 
   }
 }

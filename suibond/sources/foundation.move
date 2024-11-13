@@ -121,15 +121,4 @@ module suibond::foundation {
         bounty_table_keys: vector<ID>[]
       }
   }
-
-
-
-
-
-  public fun function_for_copy(
-    ctx: &mut TxContext
-    ) {
-
-  }
-
 }
