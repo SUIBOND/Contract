@@ -94,7 +94,6 @@ module suibond::proposal {
     project_title: String,
     project_description: String,
     grant_size: u64,
-    duration_epochs: u64,
     ctx: &mut TxContext): Proposal {
       let proposal = object::new(ctx);
       let proposal_id = object::uid_to_inner(&proposal);
@@ -102,7 +101,6 @@ module suibond::proposal {
         proposal_id,
         project_title,
         project_description,
-        duration_epochs,
         ctx);
       Proposal {
         id: proposal,

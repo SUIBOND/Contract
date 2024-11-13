@@ -53,14 +53,13 @@ module suibond::project {
     proposal_id: ID,
     title: String,
     description: String,
-    duration_epochs: u64,
     ctx: &mut TxContext): Project {
       Project{
         id: object::new(ctx),
         proposal: proposal_id,
         title: title,
         description: description,
-        duration_epochs: duration_epochs,
+        duration_epochs: 0,
         milestones: vector<Milestone>[],
         current_processing_milestone_number: 0,
       }

@@ -74,9 +74,8 @@ module suibond::suibond {
     project_title: String,
     project_description: String,
     grant_size: u64,
-    duration_epochs: u64,
     ctx: &mut TxContext) {
-      let proposal = proposal::new( developer_cap.id(), foundation_id, bounty_id, proposal_title, project_title, project_description, grant_size, duration_epochs, ctx);
+      let proposal = proposal::new( developer_cap.id(), foundation_id, bounty_id, proposal_title, project_title, project_description, grant_size, ctx);
       developer_cap.add_unsubmitted_proposal(proposal);
   }
 
