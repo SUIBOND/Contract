@@ -62,7 +62,7 @@ module suibond::bounty {
   public fun reject_proposal(
     bounty: &mut Bounty, 
     proposal_id: ID){
-      let mut proposal = bounty.borrow_unconfirmed_proposal_mut(proposal_id);
+      let proposal = bounty.borrow_unconfirmed_proposal_mut(proposal_id);
       proposal.set_project_state_rejected();
   }
 
