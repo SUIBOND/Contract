@@ -4,17 +4,16 @@ module suibond::suibond_tests {
 
   use sui::test_scenario;
   use sui::coin::{Self};
-  use sui::sui::{Self,SUI};
+  use sui::sui::{SUI};
 
-  use suibond::suibond::{Self};
-  use suibond::developer_cap::{Self, DeveloperCap};
+  use suibond::developer_cap::{Self};
   use suibond::proposal::{Self};
-  use suibond::foundation_cap::{Self, FoundationCap};
+  use suibond::foundation_cap::{Self};
   use suibond::foundation::{Self};
   use suibond::bounty::{Self};
   use suibond::platform::{Self, SuibondPlatform};
 
-  use std::string::{Self, String};
+  use std::string::{Self};
 
   const ENotImplemented: u64 = 0;
 
