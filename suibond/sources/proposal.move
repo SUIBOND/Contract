@@ -15,17 +15,25 @@ module suibond::proposal {
 
     title: String,
     project: Project,
+    
+    submitted_epochs: u64,
+    confirmed_epochs: u64,
+    completed_epochs: u64,
+    current_deadline_epochs: u64,
 
     grant_size: u64,
     stake: Coin<SUI>, // stake when create proposal with project
     state: u64
   }
 
+  const CONFIRMING_DURATION: u64 = 10;
+
   const UNSUBMITTED: u64 = 0;
   const SUBMITTED: u64 = 1;
-  const REJECTED: u64 = 2;
-  const PROCESSING: u64 = 3;
-  const COMPLETED: u64 = 4;
+  const EXPIRED: u64 = 2;
+  const REJECTED: u64 = 3;
+  const PROCESSING: u64 = 4;
+  const COMPLETED: u64 = 5;
 
   // ================= METHODS =================
 
@@ -55,15 +63,23 @@ module suibond::proposal {
     proposal.stake.join(stake);
   }
 
-  public fun set_state_submitted( proposal: &mut Proposal) {
+  public fun set_submitted_epochs(proposal: &mut Proposal, ctx: &mut TxContext) {
+    proposal.submitted_epochs = ctx.epoch();
+  }
+  
+  public fun set_state_submitted(proposal: &mut Proposal) {
       proposal.state = SUBMITTED;
   }
 
-  public fun set_state_rejected( proposal: &mut Proposal) {
+  public fun set_state_expired(proposal: &mut Proposal) {
+      proposal.state = EXPIRED;
+  }
+
+  public fun set_state_rejected(proposal: &mut Proposal) {
       proposal.state = REJECTED;
   }
 
-  public fun set_state_processing( proposal: &mut Proposal) {
+  public fun set_state_processing(proposal: &mut Proposal) {
       proposal.state = PROCESSING;
   }
   // ================= FUNCTIONS =================
@@ -96,6 +112,10 @@ module suibond::proposal {
         bounty: bounty_id,
         title: proposal_title,
         project: project,
+        submitted_epochs: 0,
+        confirmed_epochs: 0,
+        completed_epochs: 0,
+        current_deadline_epochs: 0,
         grant_size: grant_size,
         stake: coin::zero(ctx),
         state: UNSUBMITTED
