@@ -62,6 +62,7 @@ module suibond::foundation {
 
   public fun add_proposal(foundation: &mut Foundation, bounty_id: ID, proposal: Proposal) {
     let bounty = foundation.borrow_bounty_mut(bounty_id);
+    bounty.check_if_proposal_grant_size_within_bounty_range(&proposal);
     bounty.add_unconfirmed_proposal(proposal);
   }
 

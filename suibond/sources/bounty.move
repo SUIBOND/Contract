@@ -61,20 +61,15 @@ module suibond::bounty {
     bounty.proposals.processing_proposals.add(proposal.id(), proposal);
   }
 
-  public fun confrim_proposal(
-    bounty: &mut Bounty, 
-    proposal_id: ID){
+
+
+  public fun confrim_proposal(bounty: &mut Bounty, proposal_id: ID){
       let mut proposal = bounty.remove_unconfirmed_proposal(proposal_id);
-
-      assert!(proposal.grant_size() >= bounty.min_amount && proposal.grant_size() <= bounty.max_amount, 100);
-
       proposal.set_state_processing();
       bounty.add_processing_proposal(proposal);
   }
 
-  public fun reject_proposal(
-    bounty: &mut Bounty, 
-    proposal_id: ID){
+  public fun reject_proposal(bounty: &mut Bounty, proposal_id: ID){
       let proposal = bounty.borrow_unconfirmed_proposal_mut(proposal_id);
       proposal.set_state_rejected();
   }
