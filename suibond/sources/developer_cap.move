@@ -132,6 +132,16 @@ module suibond::developer_cap {
       proposal.request_extend_deadline_of_milestone(ctx);
   }
 
+  public fun update_developer_info(
+    developer_cap: &mut DeveloperCap,
+    name: String,
+    url: String,
+    ctx: &mut TxContext) {
+      assert!(developer_cap.owner == ctx.sender(), 100);
+      developer_cap.name = name;
+      developer_cap.url = url;
+  }
+
   // ================= FUNCTIONS =================
 
   fun new(name: String, url: String, ctx: &mut TxContext): DeveloperCap {

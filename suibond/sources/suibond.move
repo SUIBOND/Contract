@@ -24,8 +24,8 @@ module suibond::suibond {
   }
 
   // DEVELOPER
-  entry fun update_developer_info(name: String, url: String, ctx: &mut TxContext) {
-    // developer_cap::mint(name, ctx);
+  entry fun update_developer_info(developer_cap: &mut DeveloperCap, name: String, url: String, ctx: &mut TxContext) {
+    developer_cap.update_developer_info(name, url, ctx);
   }
 
   //FOUNDATION
