@@ -33,6 +33,10 @@ module suibond::proposal {
     object::id(proposal)
   }
 
+  public fun grant_size(proposal: &Proposal): u64 {
+    proposal.grant_size
+  }
+
   public fun create_and_add_milestone(
     proposal: &mut Proposal,
     title: String,

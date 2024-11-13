@@ -55,6 +55,9 @@ module suibond::bounty {
     bounty: &mut Bounty, 
     proposal_id: ID){
       let mut proposal = bounty.remove_unconfirmed_proposal(proposal_id);
+
+      assert!(proposal.grant_size() >= bounty.min_amount && proposal.grant_size() <= bounty.max_amount, 100);
+
       proposal.set_state_processing();
       bounty.add_processing_proposal(proposal);
   }
