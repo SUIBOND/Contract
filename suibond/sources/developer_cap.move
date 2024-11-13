@@ -30,7 +30,8 @@ module suibond::developer_cap {
     dynamic_object_field::borrow_mut(&mut developer_cap.id, proposal_id)
   }
 
-  public fun check_if_developer_is_proposer(developer_cap: &mut DeveloperCap, proposal: &Proposal) {
+  public fun check_if_developer_is_proposer(developer_cap: &mut DeveloperCap, proposal: &Proposal, ctx: &mut TxContext) {
+    assert!(developer_cap.owner == ctx.sender(), 100);
     assert!(developer_cap.owner == proposal.proposer(), 100);
   }
 
@@ -117,9 +118,20 @@ module suibond::developer_cap {
     milestone_submission_id: ID,
     ctx: &mut TxContext) {
       let proposal = platform.borrow_processing_proposal(foundation_id, bounty_id, proposal_id);
-      developer_cap.check_if_developer_is_proposer(proposal);
+      developer_cap.check_if_developer_is_proposer(proposal, ctx);
       proposal.submit_milestone(milestone_submission_id, ctx);
+  }
 
+  public fun request_extend_deadline_of_milestone(
+    developer_cap: &mut DeveloperCap,
+    platform: &mut SuibondPlatform,
+    foundation_id: ID,
+    bounty_id: ID,
+    proposal_id: ID,
+    ctx: &mut TxContext) {
+      let proposal = platform.borrow_processing_proposal(foundation_id, bounty_id, proposal_id);
+      developer_cap.check_if_developer_is_proposer(proposal, ctx);
+      proposal.request_extend_deadline_of_milestone(ctx);
   }
 
   // ================= FUNCTIONS =================

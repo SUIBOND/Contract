@@ -58,6 +58,18 @@ module suibond::project {
     project.next_milestone();
   }
 
+  public fun set_milestone_state_processing(project: &mut Project) {
+    let milestone = project.milestones.borrow_mut(project.current_processing_milestone_number);
+    milestone.set_milestone_state_processing();
+  }
+  
+  public fun request_extend_deadline_of_milestone(project: &mut Project, ctx: &mut TxContext) {
+    let milestone = project.milestones.borrow_mut(project.current_processing_milestone_number);
+    assert!(!milestone.is_milestone_expired(ctx), 100);
+    milestone.request_extend_deadline_of_milestone();
+    project.duration_epochs = project.duration_epochs + milestone::CONST_EXTENDING_DURATION_EPOCHS();
+  }
+
 
   // ================= FUNCTIONS =================
 

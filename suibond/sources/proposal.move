@@ -4,6 +4,7 @@ module suibond::proposal {
   use sui::coin::{Self, Coin};
   use sui::sui::{Self, SUI};
   use suibond::project::{Self, Project};
+  use suibond::milestone::{Self};
 
 
   public struct Proposal has key, store {
@@ -87,6 +88,10 @@ module suibond::proposal {
     proposal.confirmed_epochs = ctx.epoch();
     proposal.current_deadline_epochs = proposal.confirmed_epochs + proposal.project.duration_epochs();
   }
+
+  public fun set_milestone_state_processing(proposal: &mut Proposal) {
+    proposal.project.set_milestone_state_processing();
+  }
   
   public fun set_state_submitted(proposal: &mut Proposal) {
       proposal.state = SUBMITTED;
@@ -119,6 +124,11 @@ module suibond::proposal {
   public fun submit_milestone(proposal: &mut Proposal, milestone_submission_id: ID, ctx: &mut TxContext) {
     proposal.project.submit_milestone(milestone_submission_id, ctx);
     proposal.set_state_milestone_submitted();
+  }
+
+  public fun request_extend_deadline_of_milestone(proposal: &mut Proposal, ctx: &mut TxContext) {
+    proposal.project.request_extend_deadline_of_milestone(ctx);
+    proposal.current_deadline_epochs = proposal.current_deadline_epochs + milestone::CONST_EXTENDING_DURATION_EPOCHS();
   }
   // ================= FUNCTIONS =================
 

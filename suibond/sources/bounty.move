@@ -89,6 +89,7 @@ module suibond::bounty {
       let mut proposal = bounty.remove_unconfirmed_proposal(proposal_id);
       proposal.set_state_processing();
       proposal.set_confirmed_epochs(ctx);
+      proposal.set_milestone_state_processing();
       bounty.add_processing_proposal(proposal);
   }
 

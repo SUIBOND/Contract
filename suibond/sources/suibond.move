@@ -164,8 +164,14 @@ module suibond::suibond {
   }
 
   // DEVELOPER
-  entry fun request_extend_deadline_of_milestone(ctx: &mut TxContext) {
-
+  entry fun request_extend_deadline_of_milestone(
+    developer_cap: &mut DeveloperCap,
+    platform: &mut SuibondPlatform,
+    foundation_id: ID,
+    bounty_id: ID,
+    proposal_id: ID,
+    ctx: &mut TxContext) {
+      developer_cap.request_extend_deadline_of_milestone(platform, foundation_id, bounty_id, proposal_id, ctx);
   }
 
   // STEP 4-2 : Confirm Milestone And Get Grant For The Milestone
