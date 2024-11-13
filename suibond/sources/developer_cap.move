@@ -55,9 +55,11 @@ module suibond::developer_cap {
     dynamic_object_field::remove(&mut developer_cap.id, proposal_id)
   }
 
-  public fun submit_proposal(developer_cap: &mut DeveloperCap, platform: &mut SuibondPlatform, foundation_id: ID, bounty_id: ID, proposal: Proposal) {
+  public fun submit_proposal(developer_cap: &mut DeveloperCap, platform: &mut SuibondPlatform, foundation_id: ID, bounty_id: ID, proposal: Proposal, ctx: &mut TxContext) {
     developer_cap.submitted_proposal.push_back(proposal.id());
-    platform.add_proposal(foundation_id, bounty_id, proposal)
+    let mut proposal = proposal;
+    proposal.set_submitted_epochs(ctx);
+    platform.add_proposal(foundation_id, bounty_id, proposal);
   }
 
   
@@ -72,7 +74,7 @@ module suibond::developer_cap {
     let mut proposal = developer_cap.remove_unsubmitted_proposal();
     proposal.stake(stake);
     proposal.set_state_submitted();
-    developer_cap.submit_proposal(platform, foundation_id, bounty_id, proposal);
+    developer_cap.submit_proposal(platform, foundation_id, bounty_id, proposal, ctx);
   }
 
   // ================= FUNCTIONS =================
