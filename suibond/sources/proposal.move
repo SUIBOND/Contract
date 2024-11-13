@@ -27,13 +27,19 @@ module suibond::proposal {
   }
 
   const CONFIRMING_DURATION: u64 = 10;
+  const MILESTONE_CONFIRMING_DURATION: u64 = 5;
+  
 
   const UNSUBMITTED: u64 = 0;
+
   const SUBMITTED: u64 = 1;
   const EXPIRED: u64 = 2;
   const REJECTED: u64 = 3;
+
   const PROCESSING: u64 = 4;
-  const COMPLETED: u64 = 5;
+  const MILESTONE_SUBMITTED: u64 = 5;
+
+  const COMPLETED: u64 = 6;
 
   // ================= METHODS =================
 
@@ -43,6 +49,10 @@ module suibond::proposal {
 
   public fun grant_size(proposal: &Proposal): u64 {
     proposal.grant_size
+  }
+
+  public fun proposer(proposal: &Proposal): address {
+    proposal.proposer
   }
 
   public fun create_and_add_milestone(
@@ -94,12 +104,21 @@ module suibond::proposal {
       proposal.state = PROCESSING;
   }
 
+  public fun set_state_milestone_submitted(proposal: &mut Proposal) {
+      proposal.state = MILESTONE_SUBMITTED;
+  }
+
   public fun is_expired(proposal: &Proposal, ctx: &mut TxContext): bool {
     proposal.current_deadline_epochs < ctx.epoch()
   }
 
   public fun is_rejected(proposal: &Proposal): bool {
     proposal.state == REJECTED
+  }
+
+  public fun submit_milestone(proposal: &mut Proposal, milestone_submission_id: ID, ctx: &mut TxContext) {
+    proposal.project.submit_milestone(milestone_submission_id, ctx);
+    proposal.set_state_milestone_submitted();
   }
   // ================= FUNCTIONS =================
 

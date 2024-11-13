@@ -33,6 +33,15 @@ module suibond::foundation {
     foundation.bounty_table.borrow_mut(bounty_id)
   }
 
+  public fun borrow_processing_proposal(
+    foundation: &mut Foundation, 
+    bounty_id: ID,
+    proposal_id: ID,
+    ): &mut Proposal{
+      let bounty = foundation.bounty_table.borrow_mut(bounty_id);
+      bounty.borrow_processing_proposal_mut(proposal_id)
+  }
+
   public fun add_bounty(foundation: &mut Foundation, bounty: Bounty) {
     foundation.bounty_table_keys.push_back(bounty.id());
     foundation.bounty_table.add(bounty.id(), bounty);

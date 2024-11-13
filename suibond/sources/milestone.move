@@ -14,6 +14,7 @@ module suibond::milestone {
 
     state: u64,
 
+    submitted_epochs: u64,
     milestone_submission: Option<ID>
   }
 
@@ -21,6 +22,11 @@ module suibond::milestone {
 
   public fun duration_epochs(milestone: &Milestone): u64 {
     milestone.duration_epochs
+  }
+
+  public fun submit_milestone(milestone: &mut Milestone, milestone_submission_id: ID, ctx: &mut TxContext) {
+    milestone.milestone_submission = option::some(milestone_submission_id);
+    milestone.submitted_epochs = ctx.epoch();
   }
 
 
@@ -39,6 +45,7 @@ module suibond::milestone {
         description: description,
         duration_epochs: duration_epochs,
         state: 0,
+        submitted_epochs: 0,
         milestone_submission: option::none()
       }
   }

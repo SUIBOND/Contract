@@ -152,8 +152,15 @@ module suibond::suibond {
   }
 
   // DEVELOPER
-  entry fun submit_milestone(ctx: &mut TxContext) {
-
+  entry fun submit_milestone(
+    developer_cap: &mut DeveloperCap,
+    platform: &mut SuibondPlatform,
+    foundation_id: ID,
+    bounty_id: ID,
+    proposal_id: ID,
+    milestone_submission_id: ID,
+    ctx: &mut TxContext) {
+      developer_cap.submit_milestone(platform, foundation_id, bounty_id, proposal_id, milestone_submission_id, ctx);
   }
 
   // DEVELOPER

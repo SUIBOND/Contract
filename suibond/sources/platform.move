@@ -27,6 +27,16 @@ module suibond::platform {
     platform.foundation_table.borrow_mut(foundation_id)
   }
 
+  public fun borrow_processing_proposal(
+    platform: &mut SuibondPlatform, 
+    foundation_id: ID,
+    bounty_id: ID,
+    proposal_id: ID,
+    ): &mut Proposal{
+    let foundation = platform.borrow_foundation_mut(foundation_id);
+    foundation.borrow_processing_proposal(bounty_id, proposal_id)
+  }
+
   public fun add_bounty(platform: &mut SuibondPlatform, foundation_id: ID, bounty: Bounty){
     let foundation = platform.borrow_foundation_mut(foundation_id);
     foundation.add_bounty(bounty);

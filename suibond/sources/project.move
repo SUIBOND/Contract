@@ -20,6 +20,10 @@ module suibond::project {
   public fun duration_epochs(project: &Project): u64 {
     project.duration_epochs
   }
+
+  public fun next_milestone(project: &mut Project) {
+    project.current_processing_milestone_number = project.current_processing_milestone_number + 1;
+  }
   
 
   public fun add_milestone(project: &mut Project, milestone: Milestone) {
@@ -47,6 +51,12 @@ module suibond::project {
   // public fun add_stake_amount(project: &mut Project, stake: &Coin<SUI>) {
   //   project.current_stake_amount = project.current_stake_amount + stake.balance().value();
   // }
+
+  public fun submit_milestone(project: &mut Project, milestone_submission_id: ID, ctx: &mut TxContext) {
+    let milestone = project.milestones.borrow_mut(project.current_processing_milestone_number);
+    milestone.submit_milestone(milestone_submission_id, ctx);
+    project.next_milestone();
+  }
 
 
   // ================= FUNCTIONS =================
