@@ -48,6 +48,10 @@ module suibond::proposal {
       proposal.project.set_state_submitted();
   }
 
+  public fun set_project_state_rejected( proposal: &mut Proposal) {
+      proposal.project.set_state_rejected();
+  }
+
   public fun set_project_state_processing( proposal: &mut Proposal) {
       proposal.project.set_state_processing();
   }

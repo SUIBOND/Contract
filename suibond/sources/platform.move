@@ -60,13 +60,22 @@ module suibond::platform {
     foundation.add_proposal(bounty_id, proposal);
   }
 
-public fun confirm_unconfirmed_proposal(
+public fun confrim_proposal(
     platform: &mut SuibondPlatform, 
     foundation_id: ID, 
     bounty_id: ID, 
     proposal_id: ID){
       let foundation = platform.borrow_foundation_mut(foundation_id);
-      foundation.confirm_unconfirmed_proposal(bounty_id, proposal_id);
+      foundation.confrim_proposal(bounty_id, proposal_id);
+  }
+
+public fun reject_proposal(
+    platform: &mut SuibondPlatform, 
+    foundation_id: ID, 
+    bounty_id: ID, 
+    proposal_id: ID){
+      let foundation = platform.borrow_foundation_mut(foundation_id);
+      foundation.reject_proposal(bounty_id, proposal_id);
   }
 
   // ================= FUNCTIONS =================

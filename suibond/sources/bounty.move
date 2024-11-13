@@ -35,6 +35,10 @@ module suibond::bounty {
     bounty.name
   }
 
+  public fun borrow_unconfirmed_proposal_mut(bounty: &mut Bounty, proposal_id: ID): &mut Proposal{
+    bounty.proposals.unconfirmed_proposals.borrow_mut(proposal_id)
+  }
+
   public fun add_unconfirmed_proposal(bounty: &mut Bounty, proposal: Proposal){
     bounty.proposals.unconfirmed_proposals.add(proposal.id(), proposal);
   }
@@ -47,12 +51,19 @@ module suibond::bounty {
     bounty.proposals.processing_proposals.add(proposal.id(), proposal);
   }
 
-  public fun confirm_unconfirmed_proposal(
+  public fun confrim_proposal(
     bounty: &mut Bounty, 
     proposal_id: ID){
       let mut proposal = bounty.remove_unconfirmed_proposal(proposal_id);
       proposal.set_project_state_processing();
       bounty.add_processing_proposal(proposal);
+  }
+
+  public fun reject_proposal(
+    bounty: &mut Bounty, 
+    proposal_id: ID){
+      let mut proposal = bounty.borrow_unconfirmed_proposal_mut(proposal_id);
+      proposal.set_project_state_rejected();
   }
 
   // ================= FUNCTIONS =================

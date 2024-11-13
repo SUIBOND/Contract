@@ -125,8 +125,14 @@ module suibond::suibond {
   }
 
   //FOUNDATION
-  entry fun reject_proposal(ctx: &mut TxContext) {
-
+  entry fun reject_proposal(
+    foundation_cap: &FoundationCap,
+    platform: &mut SuibondPlatform,
+    foundation_id: ID,
+    bounty_id: ID,
+    proposal_id: ID,
+    ctx: &mut TxContext) {
+      foundation_cap.reject_proposal(platform, foundation_id, bounty_id, proposal_id, ctx);
   }
 
   // automatically rejected

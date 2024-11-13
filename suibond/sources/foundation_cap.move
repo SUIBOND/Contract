@@ -42,7 +42,19 @@ module suibond::foundation_cap {
     ctx: &mut TxContext) {
       foundation_cap.check_owner(ctx);
 
-      platform.confirm_unconfirmed_proposal(foundation_id, bounty_id, proposal_id);
+      platform.confrim_proposal(foundation_id, bounty_id, proposal_id);
+  }
+
+  public fun reject_proposal(
+    foundation_cap: &FoundationCap, 
+    platform: &mut SuibondPlatform,
+    foundation_id: ID,
+    bounty_id: ID,
+    proposal_id: ID,
+    ctx: &mut TxContext) {
+      foundation_cap.check_owner(ctx);
+
+      platform.reject_proposal(foundation_id, bounty_id, proposal_id);
   }
 
   // ================= FUNCTIONS =================
