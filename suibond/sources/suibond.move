@@ -140,8 +140,15 @@ module suibond::suibond {
   // -----------------------------------------
   // STEP 4-1 : Process Milestone or Get Back Stake Amount For Unconfirmed Proposal
   // DEVELOPER
-  entry fun unstake_unconfirmed_proposal(ctx: &mut TxContext) {
-
+  entry fun unstake_rejected_or_expired_proposal(
+    developer_cap: &mut DeveloperCap,
+    platform: &mut SuibondPlatform,
+    foundation_id: ID,
+    bounty_id: ID,
+    proposal_id: ID,
+    ctx: &mut TxContext) {
+      developer_cap.bring_back_rejected_or_expired_proposal(platform, foundation_id, bounty_id, proposal_id, ctx);
+      developer_cap.unstake_from_proposal(proposal_id, ctx);
   }
 
   // DEVELOPER

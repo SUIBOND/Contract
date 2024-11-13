@@ -68,6 +68,15 @@ module suibond::bounty {
     bounty.proposals.processing_proposals.add(proposal.id(), proposal);
   }
 
+  public fun remove_processing_proposal(bounty: &mut Bounty, proposal_id: ID): Proposal{
+    let proposal = bounty.proposals.processing_proposals.remove(proposal_id);
+    let (is_contain, proposal_index) = bounty.proposals.processing_proposal_ids.index_of(&proposal.id());
+    if (is_contain) {
+      bounty.proposals.processing_proposal_ids.remove(proposal_index);
+    };
+    proposal
+  }
+
   public fun check_if_proposal_grant_size_within_bounty_range(bounty: &Bounty, proposal: &Proposal){
     assert!(proposal.grant_size() >= bounty.min_amount && proposal.grant_size() <= bounty.max_amount,100);
   }
@@ -82,6 +91,16 @@ module suibond::bounty {
   public fun reject_proposal(bounty: &mut Bounty, proposal_id: ID){
       let proposal = bounty.borrow_unconfirmed_proposal_mut(proposal_id);
       proposal.set_state_rejected();
+  }
+
+  public fun remove_rejected_or_expired_proposal(
+    bounty: &mut Bounty,
+    proposal_id: ID,
+    ctx: &mut TxContext): Proposal {
+      let proposal = bounty.remove_processing_proposal(proposal_id);
+      assert!(proposal.is_expired(ctx), 100);
+      assert!(proposal.is_rejected(), 100);
+      proposal
   }
 
   // ================= FUNCTIONS =================

@@ -85,6 +85,16 @@ module suibond::platform {
       foundation.reject_proposal(bounty_id, proposal_id);
   }
 
+  public fun remove_rejected_or_expired_proposal(
+    platform: &mut SuibondPlatform,
+    foundation_id: ID,
+    bounty_id: ID,
+    proposal_id: ID,
+    ctx: &mut TxContext): Proposal {
+      let foundation = platform.borrow_foundation_mut(foundation_id);
+      foundation.remove_rejected_or_expired_proposal(bounty_id, proposal_id, ctx)
+  }
+
   // ================= FUNCTIONS =================
 
   public fun create_and_share(ctx: &mut TxContext) {

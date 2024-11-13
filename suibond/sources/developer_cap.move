@@ -16,6 +16,7 @@ module suibond::developer_cap {
     // url: String,
     unsubmitted_proposal: vector<ID>,
     submitted_proposal: vector<ID>,
+    rejected_or_expired_proposal: vector<ID>,
     completed_proposal: vector<ID>,
   }
 
@@ -55,6 +56,11 @@ module suibond::developer_cap {
     dynamic_object_field::remove(&mut developer_cap.id, proposal_id)
   }
 
+  public fun add_rejected_or_expired_proposal(developer_cap: &mut DeveloperCap, proposal: Proposal) {
+    developer_cap.rejected_or_expired_proposal.push_back(proposal.id());
+    dynamic_object_field::add(&mut developer_cap.id, proposal.id(), proposal);
+  }
+
   public fun submit_proposal(developer_cap: &mut DeveloperCap, platform: &mut SuibondPlatform, foundation_id: ID, bounty_id: ID, proposal: Proposal, ctx: &mut TxContext) {
     developer_cap.submitted_proposal.push_back(proposal.id());
     let mut proposal = proposal;
@@ -63,7 +69,6 @@ module suibond::developer_cap {
     platform.add_proposal(foundation_id, bounty_id, proposal);
   }
 
-  
   public fun propose_and_stake(
     developer_cap: &mut DeveloperCap,
     platform: &mut SuibondPlatform,
@@ -80,6 +85,25 @@ module suibond::developer_cap {
     developer_cap.submit_proposal(platform, foundation_id, bounty_id, proposal, ctx);
   }
 
+  public fun bring_back_rejected_or_expired_proposal(
+    developer_cap: &mut DeveloperCap,
+    platform: &mut SuibondPlatform,
+    foundation_id: ID,
+    bounty_id: ID,
+    proposal_id: ID,
+    ctx: &mut TxContext) {
+      let proposal = platform.remove_rejected_or_expired_proposal(foundation_id, bounty_id, proposal_id, ctx);
+      developer_cap.add_rejected_or_expired_proposal(proposal);
+  }
+
+  public fun unstake_from_proposal(
+    developer_cap: &mut DeveloperCap,
+    proposal_id: ID,
+    ctx: &mut TxContext) {
+      let proposal = developer_cap.borrow_proposal_mut(proposal_id);
+      proposal.unstake(ctx);
+  }
+
   // ================= FUNCTIONS =================
 
   fun new(name: String, ctx: &mut TxContext): DeveloperCap {
@@ -89,6 +113,7 @@ module suibond::developer_cap {
       name: name,
       unsubmitted_proposal: vector<ID>[],
       submitted_proposal: vector<ID>[],
+      rejected_or_expired_proposal: vector<ID>[],
       completed_proposal: vector<ID>[],
     }
   }

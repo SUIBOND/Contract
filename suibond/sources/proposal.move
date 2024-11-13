@@ -59,8 +59,13 @@ module suibond::proposal {
   }
 
   public fun stake(proposal: &mut Proposal, stake: Coin<SUI>) {
-    // proposal.project.add_stake_amount(&stake);
     proposal.stake.join(stake);
+  }
+
+  public fun unstake(proposal: &mut Proposal, ctx: &mut TxContext) {
+    let stake_amount = proposal.stake.balance().value();
+    let unstake = proposal.stake.split(stake_amount, ctx);
+    sui::transfer(unstake, ctx.sender());
   }
 
   public fun set_submitted_epochs(proposal: &mut Proposal, ctx: &mut TxContext) {
@@ -87,6 +92,14 @@ module suibond::proposal {
 
   public fun set_state_processing(proposal: &mut Proposal) {
       proposal.state = PROCESSING;
+  }
+
+  public fun is_expired(proposal: &Proposal, ctx: &mut TxContext): bool {
+    proposal.current_deadline_epochs < ctx.epoch()
+  }
+
+  public fun is_rejected(proposal: &Proposal): bool {
+    proposal.state == REJECTED
   }
   // ================= FUNCTIONS =================
 
