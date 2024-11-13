@@ -69,9 +69,10 @@ module suibond::foundation {
   public fun confrim_proposal(
     foundation: &mut Foundation, 
     bounty_id: ID, 
-    proposal_id: ID){
+    proposal_id: ID,
+    ctx: &mut TxContext){
       let bounty = foundation.bounty_table.borrow_mut(bounty_id);
-      bounty.confrim_proposal(proposal_id);
+      bounty.confrim_proposal(proposal_id, ctx);
   }
 
   public fun reject_proposal(

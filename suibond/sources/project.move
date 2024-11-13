@@ -15,8 +15,6 @@ module suibond::project {
     milestones: vector<Milestone>,
     current_processing_milestone_number: u64,
   }
-  
-
 
   // ================= METHODS =================
   public fun duration_epochs(project: &Project): u64 {
