@@ -4,7 +4,6 @@ module suibond::bounty {
   use sui::sui::{ SUI };
   use sui::object_table::{Self, ObjectTable};
   use suibond::proposal::{Proposal};
-  use std::u64::{Self};
 
   public struct Bounty has key, store {
     id: UID,
@@ -29,85 +28,9 @@ module suibond::bounty {
     completed_proposals: ObjectTable<ID, Proposal>, 
     completed_proposal_ids: vector<ID>,
   }
-  // ================= METHODS =================
 
-  public fun id(bounty: &Bounty): ID {
-    object::id(bounty)
-  }
-
-  public fun name(bounty: &Bounty): String {
-    bounty.name
-  }
-  
-  public fun risk_percent(bounty: &Bounty): u64 {
-    bounty.risk_percent
-  }
-
-  public fun borrow_unconfirmed_proposal_mut(bounty: &mut Bounty, proposal_id: ID): &mut Proposal{
-    bounty.proposals.unconfirmed_proposals.borrow_mut(proposal_id)
-  }
-
-  public fun borrow_processing_proposal_mut(bounty: &mut Bounty, proposal_id: ID,): &mut Proposal{
-    bounty.proposals.processing_proposals.borrow_mut(proposal_id)
-  }
-
-  public fun add_unconfirmed_proposal(bounty: &mut Bounty, proposal: Proposal){
-    bounty.proposals.unconfirmed_proposal_ids.push_back(proposal.id());
-    bounty.proposals.unconfirmed_proposals.add(proposal.id(), proposal);
-  }
-
-  public fun remove_unconfirmed_proposal(bounty: &mut Bounty, proposal_id: ID): Proposal{
-    let proposal = bounty.proposals.unconfirmed_proposals.remove(proposal_id);
-    let (is_contain, proposal_index) = bounty.proposals.unconfirmed_proposal_ids.index_of(&proposal.id());
-    if (is_contain) {
-      bounty.proposals.unconfirmed_proposal_ids.remove(proposal_index);
-    };
-    proposal
-  }
-
-  public fun add_processing_proposal(bounty: &mut Bounty, proposal: Proposal){
-    bounty.proposals.processing_proposal_ids.push_back(proposal.id());
-    bounty.proposals.processing_proposals.add(proposal.id(), proposal);
-  }
-
-  public fun remove_processing_proposal(bounty: &mut Bounty, proposal_id: ID): Proposal{
-    let proposal = bounty.proposals.processing_proposals.remove(proposal_id);
-    let (is_contain, proposal_index) = bounty.proposals.processing_proposal_ids.index_of(&proposal.id());
-    if (is_contain) {
-      bounty.proposals.processing_proposal_ids.remove(proposal_index);
-    };
-    proposal
-  }
-
-  public fun check_if_proposal_grant_size_within_bounty_range(bounty: &Bounty, proposal: &Proposal){
-    assert!(proposal.grant_size() >= bounty.min_amount && proposal.grant_size() <= bounty.max_amount,100);
-  }
-
-  public fun confrim_proposal(bounty: &mut Bounty, proposal_id: ID, ctx: &mut TxContext){
-      let mut proposal = bounty.remove_unconfirmed_proposal(proposal_id);
-      proposal.set_state_processing();
-      proposal.set_confirmed_epochs(ctx);
-      proposal.set_milestone_state_processing();
-      bounty.add_processing_proposal(proposal);
-  }
-
-  public fun reject_proposal(bounty: &mut Bounty, proposal_id: ID){
-      let proposal = bounty.borrow_unconfirmed_proposal_mut(proposal_id);
-      proposal.set_state_rejected();
-  }
-
-  public fun remove_rejected_or_expired_proposal(
-    bounty: &mut Bounty,
-    proposal_id: ID,
-    ctx: &mut TxContext): Proposal {
-      let proposal = bounty.remove_processing_proposal(proposal_id);
-      assert!(proposal.is_expired(ctx), 100);
-      assert!(proposal.is_rejected(), 100);
-      proposal
-  }
-
-  // ================= FUNCTIONS =================
-
+  // ====================================================
+  // ================= Create Functions =================
   public fun new(
     foundation_id: ID, 
     name: String,
@@ -137,5 +60,95 @@ module suibond::bounty {
       }
     }
   }
+  
+  // ===========================================================
+  // ================= Entry Related Functions =================
+  
+	// ===========================================
+  // ================= Methods =================
+
+  // Read
+  // ============
+  public fun id(bounty: &Bounty): ID {
+    object::id(bounty)
+  }
+
+  public fun name(bounty: &Bounty): String {
+    bounty.name
+  }
+  
+  public fun risk_percent(bounty: &Bounty): u64 {
+    bounty.risk_percent
+  }
+
+  // Borrow
+  // ============
+  public fun borrow_unconfirmed_proposal_mut(bounty: &mut Bounty, proposal_id: ID): &mut Proposal{
+    bounty.proposals.unconfirmed_proposals.borrow_mut(proposal_id)
+  }
+
+  public fun borrow_processing_proposal_mut(bounty: &mut Bounty, proposal_id: ID,): &mut Proposal{
+    bounty.proposals.processing_proposals.borrow_mut(proposal_id)
+  }
+
+  // Check
+  // ============
+  public fun check_if_proposal_grant_size_within_bounty_range(bounty: &Bounty, proposal: &Proposal){
+    assert!(proposal.grant_size() >= bounty.min_amount && proposal.grant_size() <= bounty.max_amount,100);
+  }
+  
+  // =============================================================
+  // ================= Public-Mutative Functions =================
+  public fun add_unconfirmed_proposal(bounty: &mut Bounty, proposal: Proposal){
+    bounty.proposals.unconfirmed_proposal_ids.push_back(proposal.id());
+    bounty.proposals.unconfirmed_proposals.add(proposal.id(), proposal);
+  }
+
+  public fun remove_unconfirmed_proposal(bounty: &mut Bounty, proposal_id: ID): Proposal{
+    let proposal = bounty.proposals.unconfirmed_proposals.remove(proposal_id);
+    let (is_contain, proposal_index) = bounty.proposals.unconfirmed_proposal_ids.index_of(&proposal.id());
+    if (is_contain) {
+      bounty.proposals.unconfirmed_proposal_ids.remove(proposal_index);
+    };
+    proposal
+  }
+
+  public fun add_processing_proposal(bounty: &mut Bounty, proposal: Proposal){
+    bounty.proposals.processing_proposal_ids.push_back(proposal.id());
+    bounty.proposals.processing_proposals.add(proposal.id(), proposal);
+  }
+
+  public fun remove_processing_proposal(bounty: &mut Bounty, proposal_id: ID): Proposal{
+    let proposal = bounty.proposals.processing_proposals.remove(proposal_id);
+    let (is_contain, proposal_index) = bounty.proposals.processing_proposal_ids.index_of(&proposal.id());
+    if (is_contain) {
+      bounty.proposals.processing_proposal_ids.remove(proposal_index);
+    };
+    proposal
+  }
+
+  public fun confrim_proposal(bounty: &mut Bounty, proposal_id: ID, ctx: &mut TxContext){
+      let mut proposal = bounty.remove_unconfirmed_proposal(proposal_id);
+      proposal.set_state_processing();
+      proposal.set_confirmed_epochs(ctx);
+      proposal.set_milestone_state_processing();
+      bounty.add_processing_proposal(proposal);
+  }
+
+  public fun reject_proposal(bounty: &mut Bounty, proposal_id: ID){
+      let proposal = bounty.borrow_unconfirmed_proposal_mut(proposal_id);
+      proposal.set_state_rejected();
+  }
+
+  public fun remove_rejected_or_expired_proposal( bounty: &mut Bounty, proposal_id: ID, ctx: &mut TxContext): Proposal {
+      let proposal = bounty.remove_processing_proposal(proposal_id);
+      assert!(proposal.is_expired(ctx), 100);
+      assert!(proposal.is_rejected(), 100);
+      proposal
+  }
+
+  // ==================================================
+  // ================= TEST FUNCTIONS =================
+
 
 }
