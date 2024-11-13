@@ -11,8 +11,6 @@ module suibond::project {
     title: String,
     description: String,
 
-    grant_size: u64,
-
     duration_epochs: u64,
     milestones: vector<Milestone>,
     current_processing_milestone_number: u64,
@@ -55,7 +53,6 @@ module suibond::project {
     proposal_id: ID,
     title: String,
     description: String,
-    grant_size: u64,
     duration_epochs: u64,
     ctx: &mut TxContext): Project {
       Project{
@@ -63,8 +60,6 @@ module suibond::project {
         proposal: proposal_id,
         title: title,
         description: description,
-        grant_size: grant_size,
-        // current_stake_amount: 0,
         duration_epochs: duration_epochs,
         milestones: vector<Milestone>[],
         current_processing_milestone_number: 0,

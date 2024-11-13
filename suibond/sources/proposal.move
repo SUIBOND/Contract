@@ -12,9 +12,11 @@ module suibond::proposal {
     developer_cap: ID,
     foundation: ID,
     bounty: ID,
+
     title: String,
     project: Project,
 
+    grant_size: u64,
     stake: Coin<SUI>, // stake when create proposal with project
     state: u64
   }
@@ -80,7 +82,6 @@ module suibond::proposal {
         proposal_id,
         project_title,
         project_description,
-        grant_size,
         duration_epochs,
         ctx);
       Proposal {
@@ -91,6 +92,7 @@ module suibond::proposal {
         bounty: bounty_id,
         title: proposal_title,
         project: project,
+        grant_size: grant_size,
         stake: coin::zero(ctx),
         state: UNSUBMITTED
       }
