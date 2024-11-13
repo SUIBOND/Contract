@@ -26,10 +26,17 @@ module suibond::proposal {
     stake: Coin<SUI>, // stake when create proposal with project
   }
 
+  // ====================================================
+  // ================= Constants =================
+
+  // Duration
+  // ============
   const CONFIRMING_DURATION: u64 = 10;
   const MILESTONE_CONFIRMING_DURATION: u64 = 5;
   
 
+  // Proposal State
+  // ============
   const UNSUBMITTED: u64 = 0;
 
   const SUBMITTED: u64 = 1;
@@ -41,103 +48,13 @@ module suibond::proposal {
 
   const COMPLETED: u64 = 6;
 
-  // ================= METHODS =================
-
-  public fun id(proposal: &Proposal): ID {
-    object::id(proposal)
-  }
-
-  public fun grant_size(proposal: &Proposal): u64 {
-    proposal.grant_size
-  }
-
-  public fun proposer(proposal: &Proposal): address {
-    proposal.proposer
-  }
-
-  public fun create_and_add_milestone(
-    proposal: &mut Proposal,
-    title: String,
-    description: String,
-    duration_epochs: u64,
-    ctx: &mut TxContext) {
-      proposal.project.create_and_add_milestone(
-        title, 
-        description, 
-        duration_epochs, 
-        ctx)
-  }
-
-  public fun stake(proposal: &mut Proposal, stake: Coin<SUI>) {
-    proposal.stake.join(stake);
-  }
-
-  public fun unstake(proposal: &mut Proposal, ctx: &mut TxContext) {
-    let stake_amount = proposal.stake.balance().value();
-    let unstake = proposal.stake.split(stake_amount, ctx);
-    sui::transfer(unstake, ctx.sender());
-  }
-
-  public fun set_submitted_epochs(proposal: &mut Proposal, ctx: &mut TxContext) {
-    proposal.submitted_epochs = ctx.epoch();
-    proposal.current_deadline_epochs = proposal.submitted_epochs + CONFIRMING_DURATION;
-  }
-
-  public fun set_confirmed_epochs(proposal: &mut Proposal, ctx: &mut TxContext) {
-    proposal.confirmed_epochs = ctx.epoch();
-    proposal.current_deadline_epochs = proposal.confirmed_epochs + proposal.project.duration_epochs();
-  }
-
-  public fun set_milestone_state_processing(proposal: &mut Proposal) {
-    proposal.project.set_milestone_state_processing();
-  }
-  
-  public fun set_state_submitted(proposal: &mut Proposal) {
-      proposal.state = SUBMITTED;
-  }
-
-  public fun set_state_expired(proposal: &mut Proposal) {
-      proposal.state = EXPIRED;
-  }
-
-  public fun set_state_rejected(proposal: &mut Proposal) {
-      proposal.state = REJECTED;
-  }
-
-  public fun set_state_processing(proposal: &mut Proposal) {
-      proposal.state = PROCESSING;
-  }
-
-  public fun set_state_milestone_submitted(proposal: &mut Proposal) {
-      proposal.state = MILESTONE_SUBMITTED;
-  }
-
-  public fun is_expired(proposal: &Proposal, ctx: &mut TxContext): bool {
-    proposal.current_deadline_epochs < ctx.epoch()
-  }
-
-  public fun is_rejected(proposal: &Proposal): bool {
-    proposal.state == REJECTED
-  }
-
-  public fun submit_milestone(proposal: &mut Proposal, milestone_submission_id: ID, ctx: &mut TxContext) {
-    proposal.project.submit_milestone(milestone_submission_id, ctx);
-    proposal.set_state_milestone_submitted();
-  }
-
-  public fun request_extend_deadline_of_milestone(proposal: &mut Proposal, ctx: &mut TxContext) {
-    proposal.project.request_extend_deadline_of_milestone(ctx);
-    proposal.current_deadline_epochs = proposal.current_deadline_epochs + milestone::CONST_EXTENDING_DURATION_EPOCHS();
-  }
-  // ================= FUNCTIONS =================
-
-
+  // ====================================================
+  // ================= Create Functions =================
   public fun new(
     developer_cap_id: ID, 
     foundation_id: ID, 
     bounty_id: ID, 
     proposal_title: String, 
-
     project_title: String,
     project_description: String,
     grant_size: u64,
@@ -165,6 +82,112 @@ module suibond::proposal {
         grant_size: grant_size,
         stake: coin::zero(ctx),
       }
-
   }
+  
+  // ===========================================================
+  // ================= Entry Related Functions =================
+  
+	// ===========================================
+  // ================= Methods =================
+
+  // Read
+  // ============
+  public fun id(proposal: &Proposal): ID {
+    object::id(proposal)
+  }
+
+  public fun grant_size(proposal: &Proposal): u64 {
+    proposal.grant_size
+  }
+
+  public fun proposer(proposal: &Proposal): address {
+    proposal.proposer
+  }
+  
+  // Borrow
+  // ============
+
+  // Check
+  // ============
+  public fun is_expired(proposal: &Proposal, ctx: &mut TxContext): bool {
+    proposal.current_deadline_epochs < ctx.epoch()
+  }
+
+  public fun is_rejected(proposal: &Proposal): bool {
+    proposal.state == REJECTED
+  }
+
+  // Set
+  // ============
+  public fun set_submitted_epochs(proposal: &mut Proposal, ctx: &mut TxContext) {
+    proposal.submitted_epochs = ctx.epoch();
+    proposal.current_deadline_epochs = proposal.submitted_epochs + CONFIRMING_DURATION;
+  }
+
+  public fun set_confirmed_epochs(proposal: &mut Proposal, ctx: &mut TxContext) {
+    proposal.confirmed_epochs = ctx.epoch();
+    proposal.current_deadline_epochs = proposal.confirmed_epochs + proposal.project.duration_epochs();
+  }
+  
+  public fun set_state_submitted(proposal: &mut Proposal) {
+    proposal.state = SUBMITTED;
+  }
+
+  public fun set_state_expired(proposal: &mut Proposal) {
+    proposal.state = EXPIRED;
+  }
+
+  public fun set_state_rejected(proposal: &mut Proposal) {
+    proposal.state = REJECTED;
+  }
+
+  public fun set_state_processing(proposal: &mut Proposal) {
+    proposal.state = PROCESSING;
+  }
+
+  public fun set_state_milestone_submitted(proposal: &mut Proposal) {
+    proposal.state = MILESTONE_SUBMITTED;
+  }
+
+  public fun set_milestone_state_processing(proposal: &mut Proposal) {
+    proposal.project.set_milestone_state_processing();
+  }
+  
+  // =============================================================
+  // ================= Public-Mutative Functions =================
+  public fun create_and_add_milestone(
+    proposal: &mut Proposal,
+    title: String,
+    description: String,
+    duration_epochs: u64,
+    ctx: &mut TxContext) {
+      proposal.project.create_and_add_milestone(
+        title, 
+        description, 
+        duration_epochs, 
+        ctx)
+  }
+
+  public fun stake(proposal: &mut Proposal, stake: Coin<SUI>) {
+    proposal.stake.join(stake);
+  }
+
+  public fun submit_milestone(proposal: &mut Proposal, milestone_submission_id: ID, ctx: &mut TxContext) {
+    proposal.project.submit_milestone(milestone_submission_id, ctx);
+    proposal.set_state_milestone_submitted();
+  }
+
+  public fun request_extend_deadline_of_milestone(proposal: &mut Proposal, ctx: &mut TxContext) {
+    proposal.project.request_extend_deadline_of_milestone(ctx);
+    proposal.current_deadline_epochs = proposal.current_deadline_epochs + milestone::CONST_EXTENDING_DURATION_EPOCHS();
+  }
+
+  public fun unstake(proposal: &mut Proposal, ctx: &mut TxContext) {
+    let stake_amount = proposal.stake.balance().value();
+    let unstake = proposal.stake.split(stake_amount, ctx);
+    sui::transfer(unstake, ctx.sender());
+  }
+
+  // ==================================================
+  // ================= TEST FUNCTIONS =================
 }
