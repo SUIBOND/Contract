@@ -119,7 +119,7 @@ module suibond::proposal {
 
   // Set
   // ============
-  public fun set_submitted_epochs(proposal: &mut Proposal, ctx: &mut TxContext) {
+  public fun set_submitted_and_deadline_epochs(proposal: &mut Proposal, ctx: &mut TxContext) {
     proposal.submitted_epochs = ctx.epoch();
     proposal.current_deadline_epochs = proposal.submitted_epochs + CONFIRMING_DURATION;
   }

@@ -162,7 +162,7 @@ module suibond::developer_cap {
       developer_cap.submitted_proposal.push_back(proposal.id());
       let mut proposal = proposal;
       proposal.set_state_submitted();
-      proposal.set_submitted_epochs(ctx);
+      proposal.set_submitted_and_deadline_epochs(ctx);
       platform.add_proposal(foundation_id, bounty_id, proposal);
   }
 
