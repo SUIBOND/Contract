@@ -23,6 +23,7 @@ module suibond::proposal {
     current_deadline_epochs: u64,
 
     grant_size: u64,
+    received_grant: u64,
     stake: Coin<SUI>, // stake when create proposal with project
   }
 
@@ -80,6 +81,7 @@ module suibond::proposal {
         completed_epochs: 0,
         current_deadline_epochs: 0,
         grant_size: grant_size,
+        received_grant: 0,
         stake: coin::zero(ctx),
       }
   }
@@ -98,6 +100,10 @@ module suibond::proposal {
 
   public fun grant_size(proposal: &Proposal): u64 {
     proposal.grant_size
+  }
+
+  public fun received_grant(proposal: &Proposal): u64 {
+    proposal.received_grant
   }
 
   public fun proposer(proposal: &Proposal): address {
@@ -119,6 +125,10 @@ module suibond::proposal {
 
   // Set
   // ============
+  public fun add_received_grant(proposal: &mut Proposal, amount: u64) {
+    proposal.received_grant = proposal.received_grant + amount;
+  }
+
   public fun set_submitted_and_deadline_epochs(proposal: &mut Proposal, ctx: &mut TxContext) {
     proposal.submitted_epochs = ctx.epoch();
     proposal.current_deadline_epochs = proposal.submitted_epochs + CONFIRMING_DURATION;

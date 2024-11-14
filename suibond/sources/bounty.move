@@ -1,5 +1,6 @@
 module suibond::bounty {
   use std::string::{ String };
+  use std::u64::{Self};
   use sui::coin::{ Coin };
   use sui::sui::{ SUI };
   use sui::object_table::{Self, ObjectTable};
@@ -19,6 +20,8 @@ module suibond::bounty {
 
     proposals: ProposalsOfBounty
   }
+
+  const INITIAL_GRANT_PERCENT: u64 = 10;
 
   public struct ProposalsOfBounty has store {
     unconfirmed_proposals: ObjectTable<ID, Proposal>, // developer can get back Proposal with stake when the Proposal has expired
@@ -136,6 +139,11 @@ module suibond::bounty {
       proposal.set_state_processing();
       proposal.set_confirmed_epochs(ctx);
       proposal.set_milestone_state_processing();
+
+      let initial_grant_amount = u64::divide_and_round_up(proposal.grant_size() * INITIAL_GRANT_PERCENT ,100);
+      proposal.add_received_grant(initial_grant_amount);
+      bounty.fund.split_and_transfer(initial_grant_amount, proposal.proposer(), ctx);
+
       bounty.add_processing_proposal(proposal);
   }
 
