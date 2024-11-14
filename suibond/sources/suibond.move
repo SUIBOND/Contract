@@ -1,7 +1,6 @@
 /// Module: suibond
 module suibond::suibond {
   use suibond::developer_cap::{Self, DeveloperCap};
-  use suibond::proposal::{Self};
   use suibond::foundation_cap::{Self, FoundationCap};
   use suibond::foundation::{Self};
   use suibond::platform::{Self, SuibondPlatform};
@@ -27,8 +26,8 @@ module suibond::suibond {
   }
 
   //FOUNDATION
-  entry fun mint_foundation_cap(name: String, ctx: &mut TxContext) {
-    foundation_cap::mint(name, ctx);
+  entry fun mint_foundation_cap(name: String, url: String, ctx: &mut TxContext) {
+    foundation_cap::mint(name, url, ctx);
   }
 
 

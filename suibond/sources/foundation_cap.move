@@ -8,16 +8,18 @@ module suibond::foundation_cap {
     id: UID,
     owner: address,
     name: String,
+    url: String,
     foundation_ids: vector<ID>,
   }
 
   // ====================================================
   // ================= Create Functions =================
-  public fun new(name: String, ctx: &mut TxContext): FoundationCap {
+  public fun new(name: String, url: String, ctx: &mut TxContext): FoundationCap {
     FoundationCap{
       id: object::new(ctx),
       owner: ctx.sender(),
       name: name,
+      url: url,
       foundation_ids: vector<ID>[],
     }
   }
@@ -25,8 +27,8 @@ module suibond::foundation_cap {
   // ===========================================================
   // ================= Entry Related Functions =================
   #[allow(lint(self_transfer))]
-  public fun mint(name: String, ctx: &mut TxContext) {
-    let platform = new(name, ctx);
+  public fun mint(name: String, url: String, ctx: &mut TxContext) {
+    let platform = new(name, url, ctx);
     transfer::public_transfer(platform, ctx.sender())
   }
 
@@ -91,6 +93,7 @@ module suibond::foundation_cap {
       id: id,
       owner: _,
       name: _,
+      url: _,
       foundation_ids: _,
     } = foundation_cap;
     object::delete(id);
