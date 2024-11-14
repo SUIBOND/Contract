@@ -57,7 +57,26 @@ module suibond::platform {
         max_amount,
         coin,
         ctx);
-      platform.add_bounty(foundation_cap_id, foundation_id, bounty, ctx);
+
+      let foundation = platform.borrow_foundation_mut(foundation_id);
+      foundation.check_owner(ctx);
+      foundation.check_cap(foundation_cap_id);
+
+      foundation.add_bounty(bounty);
+  }
+
+  public fun add_fund_to_bounty(
+    platform: &mut SuibondPlatform, 
+    foundation_cap_id: ID, 
+    foundation_id: ID, 
+    bounty_id: ID, 
+    coin: Coin<SUI>,
+    ctx: &mut TxContext) {
+      let foundation = platform.borrow_foundation_mut(foundation_id);
+      foundation.check_owner(ctx);
+      foundation.check_cap(foundation_cap_id);
+
+      foundation.add_fund_to_bounty(bounty_id, coin);
   }
   
 	// ===========================================
@@ -94,13 +113,6 @@ module suibond::platform {
   public fun register_foundation(platform: &mut SuibondPlatform, foundation: Foundation) {
     platform.foundation_ids.push_back(foundation.id());
     platform.foundation_table.add(foundation.id(), foundation);
-  }
-
-  public fun add_bounty(platform: &mut SuibondPlatform, foundation_cap_id: ID, foundation_id: ID, bounty: Bounty, ctx: &mut TxContext){
-    let foundation = platform.borrow_foundation_mut(foundation_id);
-    foundation.check_owner(ctx);
-    foundation.check_cap(foundation_cap_id);
-    foundation.add_bounty(bounty);
   }
 
   public fun add_proposal(platform: &mut SuibondPlatform, foundation_id: ID, bounty_id: ID, proposal: Proposal){

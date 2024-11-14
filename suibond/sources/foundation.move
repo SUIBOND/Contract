@@ -1,8 +1,11 @@
 module suibond::foundation {
   use std::string::{ String };
   use sui::object_table::{Self, ObjectTable};
+  use sui::coin::{Coin};
+  use sui::sui::{SUI};
   use suibond::bounty::{Bounty};
   use suibond::proposal::{Proposal};
+
 
   public struct Foundation has key, store {
     id: UID,
@@ -81,6 +84,11 @@ module suibond::foundation {
   public fun add_bounty(foundation: &mut Foundation, bounty: Bounty) {
     foundation.bounty_table_keys.push_back(bounty.id());
     foundation.bounty_table.add(bounty.id(), bounty);
+  }
+
+  public fun add_fund_to_bounty(foundation: &mut Foundation, bounty_id: ID, coin: Coin<SUI>) {
+    let bounty = foundation.borrow_bounty_mut(bounty_id);
+    bounty.add_fund(coin)
   }
 
   public fun add_proposal(foundation: &mut Foundation, bounty_id: ID, proposal: Proposal) {

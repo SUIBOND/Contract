@@ -56,6 +56,18 @@ module suibond::suibond {
       platform.create_and_add_bounty(foundation_cap.id(), foundation_id, name, bounty_type, risk_percent, min_amount, max_amount, coin, ctx);
   }
 
+  //FOUNDATION
+  entry public fun add_fund_to_bounty(
+    foundation_cap: &FoundationCap,
+    platform: &mut SuibondPlatform, 
+    foundation_id: ID, 
+    bounty_id: ID, 
+    coin: Coin<SUI>,
+    ctx: &mut TxContext) {
+      foundation_cap.check_owner(ctx);
+      platform.add_fund_to_bounty(foundation_cap.id(), foundation_id, bounty_id, coin, ctx);
+  }
+
   // -----------------------------------------
   // STEP 2-1 : Create Proposal with Project
   // DEVELOPER

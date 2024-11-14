@@ -103,6 +103,10 @@ module suibond::bounty {
   
   // =============================================================
   // ================= Public-Mutative Functions =================
+  public fun add_fund(bounty: &mut Bounty, coin: Coin<SUI>){
+    bounty.fund.join(coin);
+  }
+  
   public fun add_unconfirmed_proposal(bounty: &mut Bounty, proposal: Proposal){
     bounty.proposals.unconfirmed_proposal_ids.push_back(proposal.id());
     bounty.proposals.unconfirmed_proposals.add(proposal.id(), proposal);
