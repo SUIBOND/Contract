@@ -61,7 +61,6 @@ module suibond::developer_cap {
     project_description: String,
     grant_size: u64,
     ctx: &mut TxContext) {
-      assert!(developer_cap.unsubmitted_proposal.length() <= 1, 100); // for version 1 (easy version)
       let proposal = proposal::new( developer_cap.id(), foundation_id, bounty_id, proposal_title, project_title, project_description, grant_size, ctx);
       developer_cap.add_unsubmitted_proposal(proposal);
   }
