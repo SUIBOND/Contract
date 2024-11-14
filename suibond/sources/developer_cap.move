@@ -77,7 +77,7 @@ module suibond::developer_cap {
       proposal.create_and_add_milestone(title, description, duration_epochs, ctx);
   }
 
-  public fun propose_and_stake(
+  public fun stake_and_propose(
     developer_cap: &mut DeveloperCap,
     platform: &mut SuibondPlatform,
     foundation_id: ID,
@@ -91,9 +91,13 @@ module suibond::developer_cap {
     let risk_percent = platform.risk_percent(foundation_id, bounty_id);
     let stake_amount_mist = u64::divide_and_round_up(proposal.grant_size() * risk_percent, 100);
     let stake = stake.split(stake_amount_mist, ctx);
-    proposal.stake(stake);
 
-    developer_cap.submit_proposal(platform, foundation_id, bounty_id, proposal, ctx);
+    proposal.stake(stake);
+    proposal.set_state_submitted();
+    proposal.set_submitted_and_deadline_epochs(ctx);
+    developer_cap.submitted_proposal.push_back(proposal.id());
+
+    platform.add_proposal(foundation_id, bounty_id, proposal);
   }
 
   public fun unstake_rejected_or_expired_proposal(
@@ -150,20 +154,6 @@ module suibond::developer_cap {
   public fun add_rejected_or_expired_proposal(developer_cap: &mut DeveloperCap, proposal: Proposal) {
     developer_cap.rejected_or_expired_proposal.push_back(proposal.id());
     dynamic_object_field::add(&mut developer_cap.id, proposal.id(), proposal);
-  }
-
-  public fun submit_proposal(
-    developer_cap: &mut DeveloperCap, 
-    platform: &mut SuibondPlatform, 
-    foundation_id: ID, 
-    bounty_id: ID, 
-    proposal: Proposal, 
-    ctx: &mut TxContext) {
-      developer_cap.submitted_proposal.push_back(proposal.id());
-      let mut proposal = proposal;
-      proposal.set_state_submitted();
-      proposal.set_submitted_and_deadline_epochs(ctx);
-      platform.add_proposal(foundation_id, bounty_id, proposal);
   }
 
   public fun bring_back_rejected_or_expired_proposal(

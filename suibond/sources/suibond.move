@@ -87,7 +87,7 @@ module suibond::suibond {
 
   // STEP 2-2 : Propose Project
   // DEVELOPER
-  entry public fun propose_and_stake(
+  entry public fun stake_and_propose(
     developer_cap: &mut DeveloperCap,
     platform: &mut SuibondPlatform,
     foundation_id: ID,
@@ -96,7 +96,7 @@ module suibond::suibond {
     stake: &mut Coin<SUI>,
     ctx: &mut TxContext
     ) {
-      developer_cap.propose_and_stake(platform, foundation_id, bounty_id, proposal_id, stake, ctx);
+      developer_cap.stake_and_propose(platform, foundation_id, bounty_id, proposal_id, stake, ctx);
   }
 
 
