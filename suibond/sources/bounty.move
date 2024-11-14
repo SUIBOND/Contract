@@ -41,24 +41,25 @@ module suibond::bounty {
     coin: Coin<SUI>,
     ctx: &mut TxContext
     ) : Bounty {
-    Bounty {
-      id: object::new(ctx),
-      foundation: foundation_id,
-      name: name,
-      bounty_type: bounty_type,
-      risk_percent: risk_percent,
-      min_amount: min_amount,
-      max_amount: max_amount,
-      fund: coin,
-      proposals: ProposalsOfBounty{
-        unconfirmed_proposals: object_table::new<ID, Proposal>(ctx),
-        unconfirmed_proposal_ids: vector<ID>[],
-        processing_proposals: object_table::new<ID, Proposal>(ctx),
-        processing_proposal_ids: vector<ID>[],
-        completed_proposals: object_table::new<ID, Proposal>(ctx),
-        completed_proposal_ids: vector<ID>[],
+      assert!(risk_percent <= 100, 100);
+      Bounty {
+        id: object::new(ctx),
+        foundation: foundation_id,
+        name: name,
+        bounty_type: bounty_type,
+        risk_percent: risk_percent,
+        min_amount: min_amount,
+        max_amount: max_amount,
+        fund: coin,
+        proposals: ProposalsOfBounty{
+          unconfirmed_proposals: object_table::new<ID, Proposal>(ctx),
+          unconfirmed_proposal_ids: vector<ID>[],
+          processing_proposals: object_table::new<ID, Proposal>(ctx),
+          processing_proposal_ids: vector<ID>[],
+          completed_proposals: object_table::new<ID, Proposal>(ctx),
+          completed_proposal_ids: vector<ID>[],
+        }
       }
-    }
   }
   
   // ===========================================================
