@@ -128,7 +128,7 @@ module suibond::bounty {
     proposal
   }
 
-  public fun confrim_proposal(bounty: &mut Bounty, proposal_id: ID, ctx: &mut TxContext){
+  public fun confirm_proposal(bounty: &mut Bounty, proposal_id: ID, ctx: &mut TxContext){
       let mut proposal = bounty.remove_unconfirmed_proposal(proposal_id);
       proposal.set_state_processing();
       proposal.set_confirmed_epochs(ctx);

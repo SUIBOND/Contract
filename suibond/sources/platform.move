@@ -106,14 +106,14 @@ module suibond::platform {
     foundation.add_proposal(bounty_id, proposal);
   }
 
-  public fun confrim_proposal(
+  public fun confirm_proposal(
     platform: &mut SuibondPlatform, 
     foundation_id: ID, 
     bounty_id: ID, 
     proposal_id: ID,
     ctx: &mut TxContext){
       let foundation = platform.borrow_foundation_mut(foundation_id);
-      foundation.confrim_proposal(bounty_id, proposal_id, ctx);
+      foundation.confirm_proposal(bounty_id, proposal_id, ctx);
   }
 
   public fun reject_proposal(
