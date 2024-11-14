@@ -186,7 +186,16 @@ module suibond::suibond {
 
   // STEP 4-2 : Confirm Milestone And Get Grant For The Milestone
   //FOUNDATION
-  entry public fun confirm_milestone(ctx: &mut TxContext) {
+  entry public fun confirm_milestone(
+    foundation_cap: &FoundationCap,
+    platform: &mut SuibondPlatform,
+    foundation_id: ID,
+    bounty_id: ID,
+    proposal_id: ID,
+    ctx: &mut TxContext) {
+      foundation_cap.check_owner(ctx);
+      platform.confirm_milestone(foundation_cap.id(), foundation_id, bounty_id, proposal_id, ctx);
+
 
     // if the milestone deadline is missed, developer will get slashing
 
@@ -194,7 +203,13 @@ module suibond::suibond {
   }
 
   //FOUNDATION
-  entry public fun reject_milestone(ctx: &mut TxContext) {
+  entry public fun reject_milestone(
+    foundation_cap: &FoundationCap,
+    platform: &mut SuibondPlatform,
+    foundation_id: ID,
+    bounty_id: ID,
+    proposal_id: ID,
+    ctx: &mut TxContext) {
 
   }
 

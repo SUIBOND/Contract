@@ -123,6 +123,15 @@ module suibond::foundation {
       bounty.remove_rejected_or_expired_proposal(proposal_id, ctx)
   }
 
+  public fun confirm_milestone(
+    foundation: &mut Foundation, 
+    bounty_id: ID, 
+    proposal_id: ID,
+    ctx: &mut TxContext) {
+      let bounty = foundation.bounty_table.borrow_mut(bounty_id);
+      bounty.confirm_milestone(proposal_id, ctx);
+  }
+
   // ==================================================
   // ================= TEST FUNCTIONS =================
 

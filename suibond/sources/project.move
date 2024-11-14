@@ -42,12 +42,23 @@ module suibond::project {
   public fun duration_epochs(project: &Project): u64 {
     project.duration_epochs
   }
+
+  public fun current_processing_milestone_number(project: &Project): u64 {
+    project.current_processing_milestone_number
+  }
+
+  public fun borrow_current_processing_milestone_mut(project: &mut Project): &mut Milestone {
+    project.milestones.borrow_mut(project.current_processing_milestone_number)
+  }
   
   // Borrow
   // ============
 
   // Check
   // ============
+  public fun is_last_milestone(project: &mut Project): bool {
+    project.current_processing_milestone_number == project.milestones.length()
+  }
 
   // Set
   // ============
@@ -55,11 +66,6 @@ module suibond::project {
     project.current_processing_milestone_number = project.current_processing_milestone_number + 1;
   }
 
-  public fun set_milestone_state_processing(project: &mut Project) {
-    let milestone = project.milestones.borrow_mut(project.current_processing_milestone_number);
-    milestone.set_milestone_state_processing();
-  }
-  
   // =============================================================
   // ================= Public-Mutative Functions =================
   public fun add_milestone(project: &mut Project, milestone: Milestone) {
@@ -84,15 +90,9 @@ module suibond::project {
       project.add_milestone(milestone);
   }
 
-  public fun submit_milestone(project: &mut Project, milestone_submission_id: ID, ctx: &mut TxContext) {
-    let milestone = project.milestones.borrow_mut(project.current_processing_milestone_number);
-    milestone.submit_milestone(milestone_submission_id, ctx);
-    project.next_milestone();
-  }
-
   public fun request_extend_deadline_of_milestone(project: &mut Project, ctx: &mut TxContext) {
     let milestone = project.milestones.borrow_mut(project.current_processing_milestone_number);
-    assert!(!milestone.is_milestone_expired(ctx), 100);
+    assert!(!milestone.is_expired(ctx), 100);
     milestone.request_extend_deadline_of_milestone();
     project.duration_epochs = project.duration_epochs + milestone::CONST_EXTENDING_DURATION_EPOCHS();
   }

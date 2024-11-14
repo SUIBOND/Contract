@@ -142,7 +142,7 @@ module suibond::bounty {
 
       proposal.set_state_processing();
       proposal.set_confirmed_epochs(ctx);
-      proposal.set_milestone_state_processing();
+      proposal.set_current_milestone_state_processing(ctx);
 
       let initial_grant_amount = u64::divide_and_round_up(proposal.grant_size() * INITIAL_GRANT_PERCENT ,100);
       proposal.add_received_grant(initial_grant_amount);
@@ -161,6 +161,20 @@ module suibond::bounty {
       assert!(proposal.is_expired(ctx), 100);
       assert!(proposal.is_rejected(), 100);
       proposal
+  }
+
+  public fun confirm_milestone(
+    bounty: &mut Bounty, 
+    proposal_id: ID,
+    ctx: &mut TxContext) {
+      let proposal = bounty.borrow_unconfirmed_proposal_mut(proposal_id);
+      assert!(proposal.is_milestone_submitted(), 100);
+
+      proposal.confirm_current_milestone(ctx);
+
+      // let grant_amount = proposal.grant_size() * (proposal.duration_epochs() /1) * ((100 - INITIAL_GRANT_PERCENT) / 100); // proposal.grant_size * (project.duration_epochs / milestone_duration_epochs) * (100 - inital_grant_percent)/100
+      // proposal.add_received_grant(grant_amount);
+      // bounty.fund.split_and_transfer(grant_amount, proposal.proposer(), ctx);
   }
 
   // ==================================================

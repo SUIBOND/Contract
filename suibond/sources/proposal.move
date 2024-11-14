@@ -109,6 +109,14 @@ module suibond::proposal {
   public fun proposer(proposal: &Proposal): address {
     proposal.proposer
   }
+
+  public fun state(proposal: &Proposal): u64 {
+    proposal.state
+  }
+
+  public fun duration_epochs(proposal: &Proposal): u64 {
+    proposal.project.duration_epochs()
+  }
   
   // Borrow
   // ============
@@ -121,6 +129,14 @@ module suibond::proposal {
 
   public fun is_rejected(proposal: &Proposal): bool {
     proposal.state == REJECTED
+  }
+
+  public fun is_processing(proposal: &Proposal): bool {
+    proposal.state == PROCESSING
+  }
+
+  public fun is_milestone_submitted(proposal: &mut Proposal): bool {
+    proposal.state == MILESTONE_SUBMITTED
   }
 
   // Set
@@ -159,8 +175,14 @@ module suibond::proposal {
     proposal.state = MILESTONE_SUBMITTED;
   }
 
-  public fun set_milestone_state_processing(proposal: &mut Proposal) {
-    proposal.project.set_milestone_state_processing();
+  public fun set_state_completed(proposal: &mut Proposal) {
+    proposal.state = COMPLETED;
+  }
+
+  public fun set_current_milestone_state_processing(proposal: &mut Proposal, ctx: &mut TxContext) {
+    let milestone = proposal.project.borrow_current_processing_milestone_mut();
+    milestone.set_state_processing();
+    milestone.set_deadline_epochs(ctx);
   }
   
   // =============================================================
@@ -183,7 +205,14 @@ module suibond::proposal {
   }
 
   public fun submit_milestone(proposal: &mut Proposal, milestone_submission_id: ID, ctx: &mut TxContext) {
-    proposal.project.submit_milestone(milestone_submission_id, ctx);
+    let milestone = proposal.project.borrow_current_processing_milestone_mut();
+
+    if (milestone.is_expired(ctx)) {
+      // slashing
+
+    };
+
+    milestone.submit_milestone(milestone_submission_id, ctx);
     proposal.set_state_milestone_submitted();
   }
 
@@ -196,6 +225,24 @@ module suibond::proposal {
     let stake_amount = proposal.stake.balance().value();
     let unstake = proposal.stake.split(stake_amount, ctx);
     sui::transfer(unstake, proposal.proposer);
+  }
+
+  public fun confirm_current_milestone(proposal: &mut Proposal, ctx: &mut TxContext) {
+    let milestone = proposal.project.borrow_current_processing_milestone_mut();
+    milestone.set_state_confirmed();
+
+    if (proposal.project.is_last_milestone()) {
+      proposal.set_state_completed();
+    } else {
+      proposal.project.next_milestone();
+      proposal.set_state_processing();
+    };
+
+    // grant 일부  전송
+
+  }
+
+  public fun slasing(proposal: &mut Proposal) {
   }
 
   // ==================================================
