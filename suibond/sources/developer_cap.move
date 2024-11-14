@@ -119,6 +119,10 @@ module suibond::developer_cap {
     object::id(developer_cap)
   }
 
+  public fun owner(developer_cap: &DeveloperCap): address {
+    developer_cap.owner
+  }
+
   // Borrow
   // ============
   public fun borrow_proposal_mut(developer_cap: &mut DeveloperCap, proposal_id: ID): &mut Proposal {
@@ -127,6 +131,10 @@ module suibond::developer_cap {
 
   // Check
   // ============
+  public fun check_owner(developer_cap: &DeveloperCap, ctx: &mut TxContext){
+    assert!(developer_cap.owner() == ctx.sender(), 100)
+  }
+
   public fun check_if_developer_is_proposer(developer_cap: &mut DeveloperCap, proposal: &Proposal, ctx: &mut TxContext) {
     assert!(developer_cap.owner == ctx.sender(), 100);
     assert!(developer_cap.owner == proposal.proposer(), 100);

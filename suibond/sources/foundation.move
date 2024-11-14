@@ -68,6 +68,13 @@ module suibond::foundation {
 
   // Check
   // ============
+  public fun check_owner(foundation: &Foundation, ctx: &mut TxContext) {
+    assert!(foundation.owner() == ctx.sender());
+  }
+
+  public fun check_cap(foundation: &Foundation, foundation_cap_id: ID) {
+    assert!(foundation.cap() == foundation_cap_id);
+  }
   
   // =============================================================
   // ================= Public-Mutative Functions =================

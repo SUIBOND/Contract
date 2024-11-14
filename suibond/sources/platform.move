@@ -39,7 +39,7 @@ module suibond::platform {
 
   public fun create_and_add_bounty(
     platform: &mut SuibondPlatform, 
-    // foundation: &Foundation, 
+    foundation_cap_id: ID, 
     foundation_id: ID, 
     name: String,
     bounty_type: u64,
@@ -57,7 +57,7 @@ module suibond::platform {
         max_amount,
         coin,
         ctx);
-      platform.add_bounty(foundation_id, bounty);
+      platform.add_bounty(foundation_cap_id, foundation_id, bounty, ctx);
   }
   
 	// ===========================================
@@ -96,8 +96,10 @@ module suibond::platform {
     platform.foundation_table.add(foundation.id(), foundation);
   }
 
-  public fun add_bounty(platform: &mut SuibondPlatform, foundation_id: ID, bounty: Bounty){
+  public fun add_bounty(platform: &mut SuibondPlatform, foundation_cap_id: ID, foundation_id: ID, bounty: Bounty, ctx: &mut TxContext){
     let foundation = platform.borrow_foundation_mut(foundation_id);
+    foundation.check_owner(ctx);
+    foundation.check_cap(foundation_cap_id);
     foundation.add_bounty(bounty);
   }
 

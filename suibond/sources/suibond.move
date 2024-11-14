@@ -42,6 +42,7 @@ module suibond::suibond {
 
   //FOUNDATION
   entry public fun create_and_add_bounty_to_foundation(
+    foundation_cap: &FoundationCap,
     platform: &mut SuibondPlatform, 
     foundation_id: ID, 
     name: String,
@@ -51,7 +52,8 @@ module suibond::suibond {
     max_amount: u64,
     coin: Coin<SUI>,
     ctx: &mut TxContext) {
-      platform.create_and_add_bounty(foundation_id, name, bounty_type, risk_percent, min_amount, max_amount, coin, ctx);
+      foundation_cap.check_owner(ctx);
+      platform.create_and_add_bounty(foundation_cap.id(), foundation_id, name, bounty_type, risk_percent, min_amount, max_amount, coin, ctx);
   }
 
   // -----------------------------------------
@@ -66,6 +68,7 @@ module suibond::suibond {
     project_description: String,
     grant_size: u64,
     ctx: &mut TxContext) {
+      developer_cap.check_owner(ctx);
       developer_cap.create_proposal(foundation_id, bounty_id, proposal_title, project_title, project_description, grant_size, ctx);
   }
 
@@ -77,6 +80,7 @@ module suibond::suibond {
     description: String,
     duration_epochs: u64,
     ctx: &mut TxContext) {
+      developer_cap.check_owner(ctx);
       developer_cap.create_and_add_milestone(proposal_id, title, description, duration_epochs, ctx);
   }
 
@@ -96,6 +100,7 @@ module suibond::suibond {
     stake: &mut Coin<SUI>,
     ctx: &mut TxContext
     ) {
+      developer_cap.check_owner(ctx);
       developer_cap.stake_and_propose(platform, foundation_id, bounty_id, proposal_id, stake, ctx);
   }
 
@@ -110,6 +115,7 @@ module suibond::suibond {
     bounty_id: ID,
     proposal_id: ID,
     ctx: &mut TxContext) {
+      foundation_cap.check_owner(ctx);
       foundation_cap.confirm_proposal(platform, foundation_id, bounty_id, proposal_id, ctx);
   }
 
@@ -121,6 +127,7 @@ module suibond::suibond {
     bounty_id: ID,
     proposal_id: ID,
     ctx: &mut TxContext) {
+      foundation_cap.check_owner(ctx);
       foundation_cap.reject_proposal(platform, foundation_id, bounty_id, proposal_id, ctx);
   }
 
@@ -137,6 +144,7 @@ module suibond::suibond {
     bounty_id: ID,
     proposal_id: ID,
     ctx: &mut TxContext) {
+      developer_cap.check_owner(ctx);
       developer_cap.unstake_rejected_or_expired_proposal(platform, foundation_id, bounty_id, proposal_id, ctx);
   }
 
@@ -149,6 +157,7 @@ module suibond::suibond {
     proposal_id: ID,
     milestone_submission_id: ID,
     ctx: &mut TxContext) {
+      developer_cap.check_owner(ctx);
       developer_cap.submit_milestone(platform, foundation_id, bounty_id, proposal_id, milestone_submission_id, ctx);
   }
 
@@ -160,6 +169,7 @@ module suibond::suibond {
     bounty_id: ID,
     proposal_id: ID,
     ctx: &mut TxContext) {
+      developer_cap.check_owner(ctx);
       developer_cap.request_extend_deadline_of_milestone(platform, foundation_id, bounty_id, proposal_id, ctx);
   }
 
