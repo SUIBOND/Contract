@@ -130,6 +130,9 @@ module suibond::bounty {
 
   public fun confirm_proposal(bounty: &mut Bounty, proposal_id: ID, ctx: &mut TxContext){
       let mut proposal = bounty.remove_unconfirmed_proposal(proposal_id);
+
+      assert!(!proposal.is_expired(ctx), 100);
+
       proposal.set_state_processing();
       proposal.set_confirmed_epochs(ctx);
       proposal.set_milestone_state_processing();
