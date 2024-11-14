@@ -195,7 +195,7 @@ module suibond::proposal {
   public fun unstake(proposal: &mut Proposal, ctx: &mut TxContext) {
     let stake_amount = proposal.stake.balance().value();
     let unstake = proposal.stake.split(stake_amount, ctx);
-    sui::transfer(unstake, ctx.sender());
+    sui::transfer(unstake, proposal.proposer);
   }
 
   // ==================================================
