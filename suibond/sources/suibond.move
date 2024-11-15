@@ -195,10 +195,6 @@ module suibond::suibond {
     ctx: &mut TxContext) {
       foundation_cap.check_owner(ctx);
       platform.confirm_milestone(foundation_cap.id(), foundation_id, bounty_id, proposal_id, ctx);
-
-
-    // if the milestone deadline is missed, developer will get slashing
-
     // if the milestone is last one, developer will get stake amount
   }
 

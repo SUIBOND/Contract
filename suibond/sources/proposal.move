@@ -3,7 +3,7 @@ module suibond::proposal {
   use sui::coin::{Self, Coin};
   use sui::sui::{Self, SUI};
   use suibond::project::{Self, Project};
-  use suibond::milestone::{Self};
+  use suibond::milestone::{Self, Milestone};
 
 
   public struct Proposal has key, store {
@@ -120,6 +120,9 @@ module suibond::proposal {
   
   // Borrow
   // ============
+  public fun borrow_current_processing_milestone_mut(proposal: &mut Proposal): &mut Milestone {
+    proposal.project.borrow_current_processing_milestone_mut()
+  }
 
   // Check
   // ============
@@ -137,6 +140,10 @@ module suibond::proposal {
 
   public fun is_milestone_submitted(proposal: &mut Proposal): bool {
     proposal.state == MILESTONE_SUBMITTED
+  }
+
+  public fun is_last_milestone(proposal: &mut Proposal): bool {
+    proposal.project.current_processing_milestone_number() == proposal.project.number_of_milestones() - 1
   }
 
   // Set
@@ -227,7 +234,7 @@ module suibond::proposal {
     sui::transfer(unstake, proposal.proposer);
   }
 
-  public fun confirm_current_milestone(proposal: &mut Proposal, ctx: &mut TxContext) {
+  public fun confirm_current_milestone_and_send_grant(proposal: &mut Proposal, grant: Coin<SUI>, ctx: &mut TxContext) {
     let milestone = proposal.project.borrow_current_processing_milestone_mut();
     milestone.set_state_confirmed();
 
@@ -238,8 +245,7 @@ module suibond::proposal {
       proposal.set_state_processing();
     };
 
-    // grant 일부  전송
-
+    transfer::public_transfer(grant, proposal.proposer);
   }
 
   public fun slasing(proposal: &mut Proposal) {

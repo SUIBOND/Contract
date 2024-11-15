@@ -47,6 +47,10 @@ module suibond::project {
     project.current_processing_milestone_number
   }
 
+  public fun number_of_milestones(project: &Project): u64 {
+    project.milestones.length()
+  }
+
   public fun borrow_current_processing_milestone_mut(project: &mut Project): &mut Milestone {
     project.milestones.borrow_mut(project.current_processing_milestone_number)
   }

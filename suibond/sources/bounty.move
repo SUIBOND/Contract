@@ -170,11 +170,21 @@ module suibond::bounty {
       let proposal = bounty.borrow_unconfirmed_proposal_mut(proposal_id);
       assert!(proposal.is_milestone_submitted(), 100);
 
-      proposal.confirm_current_milestone(ctx);
+      let remain_amount = proposal.grant_size() - proposal.received_grant();
 
-      // let grant_amount = proposal.grant_size() * (proposal.duration_epochs() /1) * ((100 - INITIAL_GRANT_PERCENT) / 100); // proposal.grant_size * (project.duration_epochs / milestone_duration_epochs) * (100 - inital_grant_percent)/100
-      // proposal.add_received_grant(grant_amount);
-      // bounty.fund.split_and_transfer(grant_amount, proposal.proposer(), ctx);
+      if (proposal.is_last_milestone()) {
+        let milestone_grant_amount =  remain_amount;
+        let milestone_grant = bounty.fund.split(milestone_grant_amount, ctx);
+        let proposal = bounty.borrow_unconfirmed_proposal_mut(proposal_id);
+        proposal.confirm_current_milestone_and_send_grant(milestone_grant, ctx);
+
+      } else {
+        let milestone = proposal.borrow_current_processing_milestone_mut();
+        let milestone_grant_amount =  u64::divide_and_round_up(milestone.duration_epochs() * remain_amount, proposal.duration_epochs());
+        let milestone_grant = bounty.fund.split(milestone_grant_amount, ctx);
+        let proposal = bounty.borrow_unconfirmed_proposal_mut(proposal_id);
+        proposal.confirm_current_milestone_and_send_grant(milestone_grant, ctx);
+      };
   }
 
   // ==================================================
