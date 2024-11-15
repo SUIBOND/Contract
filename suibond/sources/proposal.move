@@ -234,7 +234,7 @@ module suibond::proposal {
     sui::transfer(unstake, proposal.proposer);
   }
 
-  public fun confirm_current_milestone_and_send_grant(proposal: &mut Proposal, grant: Coin<SUI>, ctx: &mut TxContext) {
+  public fun confirm_current_milestone_and_send_grant(proposal: &mut Proposal, grant: Coin<SUI>) {
     let milestone = proposal.project.borrow_current_processing_milestone_mut();
     milestone.set_state_confirmed();
 
@@ -246,6 +246,12 @@ module suibond::proposal {
     };
 
     transfer::public_transfer(grant, proposal.proposer);
+  }
+
+  public fun reject_milestone(proposal: &mut Proposal) {
+    let milestone = proposal.project.borrow_current_processing_milestone_mut();
+    milestone.set_state_rejected();
+
   }
 
   public fun slasing(proposal: &mut Proposal) {

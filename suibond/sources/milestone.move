@@ -104,6 +104,10 @@ module suibond::milestone {
   public fun set_state_confirmed(milestone: &mut Milestone) {
     milestone.state = CONFIRMED;
   }
+
+  public fun set_state_rejected(milestone: &mut Milestone) {
+    milestone.state = REJECTED;
+  }
   
   // =============================================================
   // ================= Public-Mutative Functions =================

@@ -206,6 +206,7 @@ module suibond::suibond {
     bounty_id: ID,
     proposal_id: ID,
     ctx: &mut TxContext) {
+      foundation_cap.check_owner(ctx);
 
   }
 

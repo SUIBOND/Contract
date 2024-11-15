@@ -176,15 +176,23 @@ module suibond::bounty {
         let milestone_grant_amount =  remain_amount;
         let milestone_grant = bounty.fund.split(milestone_grant_amount, ctx);
         let proposal = bounty.borrow_unconfirmed_proposal_mut(proposal_id);
-        proposal.confirm_current_milestone_and_send_grant(milestone_grant, ctx);
+        proposal.confirm_current_milestone_and_send_grant(milestone_grant);
 
       } else {
         let milestone = proposal.borrow_current_processing_milestone_mut();
         let milestone_grant_amount =  u64::divide_and_round_up(milestone.duration_epochs() * remain_amount, proposal.duration_epochs());
         let milestone_grant = bounty.fund.split(milestone_grant_amount, ctx);
         let proposal = bounty.borrow_unconfirmed_proposal_mut(proposal_id);
-        proposal.confirm_current_milestone_and_send_grant(milestone_grant, ctx);
+        proposal.confirm_current_milestone_and_send_grant(milestone_grant);
       };
+  }
+  
+  public fun reject_milestone(
+    bounty: &mut Bounty, 
+    proposal_id: ID) {
+      let proposal = bounty.borrow_unconfirmed_proposal_mut(proposal_id);
+      assert!(proposal.is_milestone_submitted(), 100);
+
   }
 
   // ==================================================

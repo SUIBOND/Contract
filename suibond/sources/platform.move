@@ -93,6 +93,20 @@ module suibond::platform {
       foundation.confirm_milestone(bounty_id, proposal_id, ctx);
     }
 
+  public fun reject_milestone(
+    platform: &mut SuibondPlatform, 
+    foundation_cap_id: ID, 
+    foundation_id: ID, 
+    bounty_id: ID, 
+    proposal_id: ID,
+    ctx: &mut TxContext) {
+      let foundation = platform.borrow_foundation_mut(foundation_id);
+      foundation.check_owner(ctx);
+      foundation.check_cap(foundation_cap_id);
+
+      foundation.reject_milestone(bounty_id, proposal_id);
+    }
+
 
   
 	// ===========================================

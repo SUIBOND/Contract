@@ -132,6 +132,14 @@ module suibond::foundation {
       bounty.confirm_milestone(proposal_id, ctx);
   }
 
+  public fun reject_milestone(
+    foundation: &mut Foundation, 
+    bounty_id: ID, 
+    proposal_id: ID) {
+      let bounty = foundation.bounty_table.borrow_mut(bounty_id);
+      bounty.reject_milestone(proposal_id);
+  }
+
   // ==================================================
   // ================= TEST FUNCTIONS =================
 
