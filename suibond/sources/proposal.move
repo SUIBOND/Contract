@@ -216,6 +216,7 @@ module suibond::proposal {
 
     if (milestone.is_expired(ctx)) {
       // slashing
+      // proposal.slashing();
 
     };
 
@@ -254,7 +255,7 @@ module suibond::proposal {
 
   }
 
-  public fun slasing(proposal: &mut Proposal) {
+  public fun slashing(proposal: &mut Proposal) {
   }
 
   // ==================================================
