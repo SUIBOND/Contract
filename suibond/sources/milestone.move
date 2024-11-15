@@ -72,6 +72,7 @@ module suibond::milestone {
   public fun duration_epochs(milestone: &Milestone): u64 {
     milestone.duration_epochs
   }
+
   
   // Borrow
   // ============
@@ -80,6 +81,10 @@ module suibond::milestone {
   // ============
   public fun is_expired(milestone: &mut Milestone, ctx: &mut TxContext): bool {
     milestone.deadline_epochs < ctx.epoch()
+  }
+  
+  public fun is_extended(milestone: &Milestone): bool {
+    milestone.is_extended
   }
 
 
